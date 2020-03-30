@@ -1,20 +1,16 @@
 <template>
   <md-card>
     <md-card-media>
-      <img src="https://images.dog.ceo/breeds/appenzeller/n02107908_3105.jpg" alt="Dog" />
+      <img src="https://images.dog.ceo/breeds/shihtzu/n02086240_3175.jpg" alt="Dog" />
     </md-card-media>
 
     <md-card-header>
-      <div class="md-title">Title goes here</div>
-      <div class="md-subhead">Subtitle here</div>
+      <div class="md-title">Bobtail Boxer - 100lv</div>
+      <div class="md-subhead">
+        <md-icon>location_on</md-icon>Bulgaria |
+        <md-icon>access_time</md-icon>27/03/2020 13:45
+      </div>
     </md-card-header>
-
-    <md-card-actions>
-      <md-button>Action</md-button>
-      <md-button>Action</md-button>
-    </md-card-actions>
-
-    <md-card-content>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio itaque ea, nostrum odio. Dolores, sed accusantium quasi non, voluptas eius illo quas, saepe voluptate pariatur in deleniti minus sint. Excepturi.</md-card-content>
   </md-card>
 </template>
 
@@ -23,5 +19,14 @@ export default {};
 </script>
 
 <style lang="scss" scoped>
+.md-subhead {
+  .md-icon {
+    $size: 16px;
 
+    width: $size;
+    min-width: $size;
+    height: $size;
+    font-size: $size !important;
+  }
+}
 </style>

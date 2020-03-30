@@ -2,14 +2,14 @@
   <form novalidate class="md-layout" @submit.prevent="submit">
     <div class="md-layout-item">
       <md-field>
-        <label for="adType">Ad Type</label>
-        <md-select v-model="adType" name="adType" id="adType">
+        <label for="ad-type">Ad Type</label>
+        <md-select v-model="adType" name="ad-type" id="ad-type">
           <md-option value="any">(Any)</md-option>
           <md-option value="adoption">Adoption</md-option>
           <md-option value="sale">Sale</md-option>
           <md-option value="breeding">Breeding</md-option>
           <md-option value="wanted">Pet Wanted</md-option>
-          <md-option value="friendshyp">Friendship</md-option>
+          <md-option value="friendship">Friendship</md-option>
         </md-select>
       </md-field>
     </div>

@@ -13,7 +13,8 @@ import {
   MdField,
   MdMenu,
   MdAutocomplete,
-  MdHighlightText
+  MdHighlightText,
+  MdTabs,
 } from 'vue-material/dist/components'
 
 Vue.config.productionTip = false
@@ -30,6 +31,7 @@ Vue.use(MdField)
 Vue.use(MdMenu)
 Vue.use(MdAutocomplete)
 Vue.use(MdHighlightText)
+Vue.use(MdTabs)
 
 new Vue({
   render: h => h(App),

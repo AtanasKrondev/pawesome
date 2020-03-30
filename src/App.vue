@@ -1,6 +1,5 @@
 <template>
-  <div id="app" class="page-container">
-    <!-- md-layout-column -->
+  <div id="app">
     <md-app md-mode="reveal">
       <md-app-toolbar class="md-primary">
         <md-button class="md-icon-button" @click="navDrawer = true">
@@ -13,25 +12,7 @@
           <md-button class="md-icon-button">
             <md-icon>chat</md-icon>
           </md-button>
-          <md-menu>
-            <md-button md-menu-trigger class="md-icon-button">
-              <md-avatar class="md-avatar-icon">A</md-avatar>
-            </md-button>
-            <md-menu-content>
-              <md-menu-item>
-                <md-icon>exit_to_app</md-icon>Enter
-              </md-menu-item>
-              <md-menu-item>
-                <md-icon>account_box</md-icon>Profile
-              </md-menu-item>
-              <md-menu-item>
-                <md-icon>settings_applications</md-icon>Settings
-              </md-menu-item>
-              <md-menu-item>
-                <md-icon>close</md-icon>Logout
-              </md-menu-item>
-            </md-menu-content>
-          </md-menu>
+          <app-menu></app-menu>
         </div>
       </md-app-toolbar>
 
@@ -40,7 +21,11 @@
       </md-app-drawer>
 
       <md-app-content>
-        <app-content></app-content>
+        <!-- <app-ad-list></app-ad-list> -->
+        <!-- <app-ad-details></app-ad-details> -->
+        <!-- <app-login></app-login> -->
+        <!-- <app-ad-form></app-ad-form> -->
+        <app-profile-edit></app-profile-edit>
       </md-app-content>
     </md-app>
   </div>
@@ -51,13 +36,23 @@ import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/default.css";
 
 import AppNavDrawer from "./components/core/NavDrawer.vue";
-import AppContent from "./components/core/Content.vue";
+import AppMenu from "./components/core/Menu.vue";
+import AppProfileEdit from "./components/ProfileEdit.vue";
+// import AppAdList from "./components/AdList.vue";
+// import AppAdForm from "./components/AdForm.vue";
+// import AppAdDetails from "./components/AdDetails.vue";
+// import AppLogin from "./components/Login.vue";
 
 export default {
   name: "App",
   components: {
     AppNavDrawer,
-    AppContent
+    AppMenu,
+    AppProfileEdit
+    // AppAdList,
+    // AppAdForm,
+    // AppAdDetails,
+    // AppLogin
   },
   data() {
     return {
@@ -73,7 +68,7 @@ export default {
 @include md-register-theme(
   "default",
   (
-    primary: purple,
+    primary: rgb(191, 194, 4),
     accent: white,
     theme: dark
   )
