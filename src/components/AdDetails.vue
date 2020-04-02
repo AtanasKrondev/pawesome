@@ -26,7 +26,7 @@
       </md-card-header>
       <md-card-actions md-alignment="left">
         <md-button class="md-raised md-primary">
-          <md-icon>star</md-icon> Save Ad
+          <md-icon>bookmark</md-icon> Save Ad
         </md-button>
         <md-button class="md-raised md-primary">
           <md-icon>chat</md-icon> Contact
@@ -57,6 +57,12 @@
     </md-card>
   </div>
 </template>
+
+<script>
+export default {
+  name: 'AdDetails',
+}
+</script>
 
 <style lang="scss" scoped>
 .md-subhead {

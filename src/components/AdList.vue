@@ -31,6 +31,7 @@
 import AppAdCard from "./AdCard.vue";
 import AppAdSearch from "./AdSearch.vue";
 export default {
+  name: 'AdList',
   components: {
     AppAdCard,
     AppAdSearch,

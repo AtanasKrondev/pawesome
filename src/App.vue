@@ -6,10 +6,12 @@
           <md-icon>menu</md-icon>
         </md-button>
         <span class="md-title">
-          <md-icon>pets</md-icon>Pawesome
+          <md-button to="/ads">
+            <md-icon>pets</md-icon>Pawesome
+          </md-button>
         </span>
         <div class="md-toolbar-section-end">
-          <md-button class="md-icon-button">
+          <md-button class="md-icon-button" to="/messages">
             <md-icon>chat</md-icon>
           </md-button>
           <app-menu></app-menu>
@@ -21,11 +23,7 @@
       </md-app-drawer>
 
       <md-app-content>
-        <!-- <app-ad-list></app-ad-list> -->
-        <!-- <app-ad-details></app-ad-details> -->
-        <!-- <app-login></app-login> -->
-        <!-- <app-ad-form></app-ad-form> -->
-        <app-profile-edit></app-profile-edit>
+        <router-view></router-view>
       </md-app-content>
     </md-app>
   </div>
@@ -37,22 +35,12 @@ import "vue-material/dist/theme/default.css";
 
 import AppNavDrawer from "./components/core/NavDrawer.vue";
 import AppMenu from "./components/core/Menu.vue";
-import AppProfileEdit from "./components/ProfileEdit.vue";
-// import AppAdList from "./components/AdList.vue";
-// import AppAdForm from "./components/AdForm.vue";
-// import AppAdDetails from "./components/AdDetails.vue";
-// import AppLogin from "./components/Login.vue";
 
 export default {
   name: "App",
   components: {
     AppNavDrawer,
-    AppMenu,
-    AppProfileEdit
-    // AppAdList,
-    // AppAdForm,
-    // AppAdDetails,
-    // AppLogin
+    AppMenu
   },
   data() {
     return {

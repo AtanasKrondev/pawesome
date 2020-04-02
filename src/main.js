@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import App from './App.vue'
+import router from './plugins/router.js'
 import {
   MdApp,
   MdDrawer,
@@ -15,6 +16,8 @@ import {
   MdAutocomplete,
   MdHighlightText,
   MdTabs,
+  MdDivider,
+  MdSwitch,
 } from 'vue-material/dist/components'
 
 Vue.config.productionTip = false
@@ -32,7 +35,10 @@ Vue.use(MdMenu)
 Vue.use(MdAutocomplete)
 Vue.use(MdHighlightText)
 Vue.use(MdTabs)
+Vue.use(MdDivider)
+Vue.use(MdSwitch)
 
 new Vue({
   render: h => h(App),
+  router,
 }).$mount('#app')

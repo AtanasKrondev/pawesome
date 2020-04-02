@@ -9,81 +9,135 @@
         <md-card-content>
           <div class="md-layout md-alignment-top-left">
             <div class="md-layout-item md-size-100">
-              <md-field>
+              <md-field :class="{'md-invalid':$v.form.title.$error}">
                 <label for="title">Title</label>
-                <md-input name="title" id="title" type="text" v-model="form.title" required />
+                <md-input
+                  name="title"
+                  id="title"
+                  type="text"
+                  @blur="$v.form.title.$touch"
+                  v-model="form.title"
+                  maxlength="160"
+                  required
+                />
+                <span class="md-error" v-if="!$v.form.title.required">Title is required</span>
+                <span
+                  class="md-error"
+                  v-else-if="!$v.form.title.minLength||!$v.form.title.maxLength"
+                >Title must be between 5 and 160 symbols</span>
               </md-field>
             </div>
             <div class="md-layout-item md-size-100">
-              <md-field>
+              <md-field :class="{'md-invalid':$v.form.imageUrl.$error}">
                 <label for="image-url">Image URL</label>
                 <md-input
                   name="image-url"
                   id="image-url"
                   type="text"
+                  @blur="$v.form.imageUrl.$touch"
                   v-model="form.imageUrl"
                   required
                 />
+                <span class="md-helper-text">Allowed extensions: *.png *.jpg *.jpeg *.gif</span>
+                <span class="md-error" v-if="!$v.form.imageUrl.required">Image URL is required</span>
+                <span class="md-error" v-if="!$v.form.imageUrl.imageUrl">Invalid URL format</span>
               </md-field>
             </div>
             <div class="md-layout-item md-size-100">
-              <md-field>
+              <md-field :class="{'md-invalid':$v.form.description.$error}">
                 <label for="description">Description</label>
                 <md-textarea
                   name="description"
                   id="description"
                   md-autogrow
+                  @blur="$v.form.description.$touch"
                   v-model="form.description"
+                  maxlength="480"
                 ></md-textarea>
+                <span
+                  class="md-error"
+                  v-if="!$v.form.description.maxLength"
+                >Description must be maximum 480 symbols</span>
+                <span class="md-helper-text">Not mandatory, but it'll be useful for the others</span>
               </md-field>
             </div>
             <div class="md-layout-item">
-              <md-field>
+              <md-field :class="{'md-invalid':$v.form.adType.$error}">
                 <label for="ad-type">Ad Type</label>
-                <md-select v-model="form.adType" name="ad-type" id="ad-type" required>
+                <md-select
+                  v-model="form.adType"
+                  @blur="$v.form.adType.$touch"
+                  name="ad-type"
+                  id="ad-type"
+                  required
+                >
                   <md-option value="adoption">Adoption</md-option>
                   <md-option value="sale">Sale</md-option>
                   <md-option value="breeding">Breeding</md-option>
                   <md-option value="wanted">Pet Wanted</md-option>
                   <md-option value="friendship">Friendship</md-option>
                 </md-select>
+                <span class="md-error" v-if="!$v.form.adType.required">Ad type is required</span>
               </md-field>
             </div>
             <div class="md-layout-item">
-              <md-field>
+              <md-field :class="{'md-invalid':$v.form.price.$error}">
                 <label for="price">Price (BGN)</label>
-                <md-input name="price" id="price" type="number" v-model="form.price" />
+                <md-input
+                  name="price"
+                  id="price"
+                  type="number"
+                  v-model="form.price"
+                  @blur="$v.form.price.$touch"
+                />
+                <span class="md-error" v-if="!$v.form.price.decimal">Price must be a number</span>
+                <span
+                  class="md-error"
+                  v-else-if="!$v.form.price.minValue"
+                >Price must be at least 0.01 BGN</span>
               </md-field>
             </div>
             <div class="md-layout-item md-size-100">
-              <md-autocomplete
-                v-model="form.breed"
-                :md-options="breeds"
-                name="breed"
-                id="breed"
-                required
-              >
+              <md-field :class="{'md-invalid':$v.form.breed.$error}">
                 <label for="breed">Breed</label>
-
-                <template slot="md-autocomplete-item" slot-scope="{ item, term }">
-                  <md-highlight-text :md-term="term">{{ item }}</md-highlight-text>
-                </template>
-
-                <template slot="md-autocomplete-empty">No result</template>
-              </md-autocomplete>
+                <md-select
+                  md-dense
+                  v-model="form.breed"
+                  @blur="$v.form.breed.$touch"
+                  name="breed"
+                  id="breed"
+                  required
+                >
+                  <md-option value="other">- mixed/unknown -</md-option>
+                  <md-option v-for="(b, i) in breeds" :key="i" :value="b">{{b}}</md-option>
+                </md-select>
+                <span class="md-error" v-if="!$v.form.breed.required">Breed is required</span>
+              </md-field>
             </div>
             <div class="md-layout-item">
-              <md-field>
+              <md-field :class="{'md-invalid':$v.form.age.$error}">
                 <label for="age">Age (years)</label>
-                <md-input name="age" id="age" type="number" v-model="form.age" required />
+                <md-input
+                  name="age"
+                  id="age"
+                  type="number"
+                  @blur="$v.form.age.$touch"
+                  v-model="form.age"
+                />
+                <span class="md-error" v-if="!$v.form.age.decimal">Age must be a number</span>
+                <span
+                  class="md-error"
+                  v-else-if="!$v.form.age.minValue"
+                >Age can not be negative number</span>
               </md-field>
             </div>
             <div class="md-layout-item">
               <md-field>
                 <label for="gender">Gender</label>
-                <md-select v-model="form.gender" name="gender" id="gender" required>
+                <md-select v-model="form.gender" name="gender" id="gender">
                   <md-option value="male">Male</md-option>
                   <md-option value="female">Female</md-option>
+                  <md-option :value="null">Not sure (empty)</md-option>
                 </md-select>
               </md-field>
             </div>
@@ -104,59 +158,18 @@
               </md-autocomplete>
             </div>
             <div class="md-layout-item">
-              <md-field>
-                <label for="pedigree">Pedigree</label>
-                <md-select v-model="form.pedigree" name="pedigree" id="pedigree">
-                  <md-option value="true">Yes</md-option>
-                  <md-option value="false">No</md-option>
-                </md-select>
-              </md-field>
+              <md-switch
+                v-model="form.pedigree"
+                name="pedigree"
+                id="pedigree"
+                class="md-primary"
+              >Pedigree</md-switch>
             </div>
           </div>
-
-          <!-- <div class="md-layout-item md-small-size-100">
-              <md-field :class="getValidationClass('lastName')">
-                <label for="last-name">Last Name</label>
-                <md-input name="last-name" id="last-name" autocomplete="family-name" v-model="form.lastName" :disabled="sending" />
-                <span class="md-error" v-if="!$v.form.lastName.required">The last name is required</span>
-                <span class="md-error" v-else-if="!$v.form.lastName.minlength">Invalid last name</span>
-              </md-field>
-            </div>
-          </div>
-
-          <div class="md-layout md-gutter">
-            <div class="md-layout-item md-small-size-100">
-              <md-field :class="getValidationClass('gender')">
-                <label for="gender">Gender</label>
-                <md-select name="gender" id="gender" v-model="form.gender" md-dense :disabled="sending">
-                  <md-option></md-option>
-                  <md-option value="M">M</md-option>
-                  <md-option value="F">F</md-option>
-                </md-select>
-                <span class="md-error">The gender is required</span>
-              </md-field>
-            </div>
-
-            <div class="md-layout-item md-small-size-100">
-              <md-field :class="getValidationClass('age')">
-                <label for="age">Age</label>
-                <md-input type="number" id="age" name="age" autocomplete="age" v-model="form.age" :disabled="sending" />
-                <span class="md-error" v-if="!$v.form.age.required">The age is required</span>
-                <span class="md-error" v-else-if="!$v.form.age.maxlength">Invalid age</span>
-              </md-field>
-            </div>
-          </div>
-
-          <md-field :class="getValidationClass('email')">
-            <label for="email">Email</label>
-            <md-input type="email" name="email" id="email" autocomplete="email" v-model="form.email" :disabled="sending" />
-            <span class="md-error" v-if="!$v.form.email.required">The email is required</span>
-            <span class="md-error" v-else-if="!$v.form.email.email">Invalid email</span>
-          </md-field>-->
         </md-card-content>
 
         <md-card-actions>
-          <md-button type="submit" class="md-raised md-primary">
+          <md-button type="submit" :disabled="$v.$invalid" class="md-raised md-primary">
             <md-icon>add</md-icon>Post Ad
           </md-button>
         </md-card-actions>
@@ -166,23 +179,38 @@
 </template>
 
 <script>
+import { validationMixin } from "vuelidate";
+import {
+  required,
+  minLength,
+  maxLength,
+  helpers,
+  minValue,
+  decimal
+} from "vuelidate/lib/validators";
+
+const imageUrl = helpers.regex(
+  "imageUrl",
+  /^https?:\/\/.*\.(?:png|jpg|jpeg|gif)$/
+);
+
 export default {
+  name: 'AdForm',
   data() {
     return {
       form: {
-        title: "",
-        imageUrl: "",
-        description: "",
-        adType: "",
+        title: null,
+        imageUrl: null,
+        description: null,
+        adType: null,
         price: null,
-        breed: "",
-        age: 0,
-        gender: "",
-        location: "",
+        breed: null,
+        age: null,
+        gender: null,
+        location: null,
         pedigree: false
       },
       breeds: [
-        "(Any)",
         "husky",
         "keeshond",
         "kelpie",
@@ -210,7 +238,19 @@ export default {
   },
   methods: {
     submit() {
-      console.log(this.form);
+      console.log({ ...this.form });
+    }
+  },
+  mixins: [validationMixin],
+  validations: {
+    form: {
+      title: { required, minLength: minLength(5), maxLength: maxLength(160) },
+      imageUrl: { required, imageUrl },
+      description: { maxLength: maxLength(480) },
+      adType: { required },
+      price: { decimal, minValue: minValue(0.01) },
+      breed: { required },
+      age: { decimal, minValue: minValue(0) }
     }
   }
 };
@@ -223,5 +263,8 @@ export default {
 }
 .md-button {
   width: 100%;
+}
+.md-option {
+  background: pink;
 }
 </style>
