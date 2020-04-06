@@ -1,5 +1,5 @@
 <template>
-  <p>Makari</p>
+  <p>404</p>
 </template>
 
 <script>

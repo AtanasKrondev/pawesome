@@ -6,16 +6,12 @@
           <md-icon>menu</md-icon>
         </md-button>
         <span class="md-title">
-          <md-button to="/ads">
+          <md-button to="/">
             <md-icon>pets</md-icon>Pawesome
           </md-button>
         </span>
-        <div class="md-toolbar-section-end">
-          <md-button class="md-icon-button" to="/messages">
-            <md-icon>chat</md-icon>
-          </md-button>
-          <app-menu></app-menu>
-        </div>
+
+        <app-menu :user="user"></app-menu>
       </md-app-toolbar>
 
       <md-app-drawer :md-active.sync="navDrawer">
@@ -32,6 +28,8 @@
 <script>
 import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/default.css";
+import * as firebase from "firebase/app";
+import "firebase/auth";
 
 import AppNavDrawer from "./components/core/NavDrawer.vue";
 import AppMenu from "./components/core/Menu.vue";
@@ -44,8 +42,14 @@ export default {
   },
   data() {
     return {
-      navDrawer: false
+      navDrawer: false,
+      user: null
     };
+  },
+  created() {
+    firebase.auth().onAuthStateChanged(user => {
+      this.user = user;
+    });
   }
 };
 </script>

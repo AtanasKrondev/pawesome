@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
-import router from './plugins/router.js'
+import router from './router.js'
+import firebase from 'firebase/app'
+
 import {
   MdApp,
   MdDrawer,
@@ -38,7 +40,26 @@ Vue.use(MdTabs)
 Vue.use(MdDivider)
 Vue.use(MdSwitch)
 
-new Vue({
-  render: h => h(App),
-  router,
-}).$mount('#app')
+const firebaseConfig = {
+  apiKey: "AIzaSyAiWeqZkIPopGzq9DgRwN4CFLqeSvHQ1Go",
+  authDomain: "paw-esome.firebaseapp.com",
+  databaseURL: "https://paw-esome.firebaseio.com",
+  projectId: "paw-esome",
+  storageBucket: "paw-esome.appspot.com",
+  messagingSenderId: "91561704662",
+  appId: "1:91561704662:web:d4b07f88c1182779cedd77"
+};
+
+firebase.initializeApp(firebaseConfig);
+
+let app;
+
+firebase.auth().onAuthStateChanged(user => {
+  console.log(user);
+  if (!app) {
+    app = new Vue({
+      render: h => h(App),
+      router,
+    }).$mount('#app');
+  }
+})
