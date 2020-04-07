@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router.js'
+import store from './store.js'
 import firebase from 'firebase/app'
 
 import {
@@ -20,6 +21,7 @@ import {
   MdTabs,
   MdDivider,
   MdSwitch,
+  MdDialog,
 } from 'vue-material/dist/components'
 
 Vue.config.productionTip = false
@@ -39,6 +41,7 @@ Vue.use(MdHighlightText)
 Vue.use(MdTabs)
 Vue.use(MdDivider)
 Vue.use(MdSwitch)
+Vue.use(MdDialog)
 
 const firebaseConfig = {
   apiKey: "AIzaSyAiWeqZkIPopGzq9DgRwN4CFLqeSvHQ1Go",
@@ -55,11 +58,12 @@ firebase.initializeApp(firebaseConfig);
 let app;
 
 firebase.auth().onAuthStateChanged(user => {
-  console.log(user);
+  store.dispatch('initiate', user)
   if (!app) {
     app = new Vue({
       render: h => h(App),
       router,
+      store,
     }).$mount('#app');
   }
 })

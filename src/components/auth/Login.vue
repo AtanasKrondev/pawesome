@@ -52,8 +52,8 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import * as firebase from "firebase/app";
-import "firebase/auth";
+// import * as firebase from "firebase/app";
+// import "firebase/auth";
 import {
   required,
   email,
@@ -70,14 +70,11 @@ export default {
   },
   methods: {
     submit() {
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          console.log(user);
-          this.$router.push("/");
-        })
-        .catch(err => console.log(err));
+      const user = {
+        email: this.email,
+        password: this.password
+      }
+      this.$store.dispatch('login', user)
     }
   },
   mixins: [validationMixin],

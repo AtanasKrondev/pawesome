@@ -1,15 +1,16 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import * as firebase from "firebase/app";
-import "firebase/auth";
+// import * as firebase from "firebase/app";
+// import "firebase/auth";
+import store from './store.js'
 
-import AdList from './components/AdList.vue';
-import Login from './components/Login.vue';
-import Register from './components/Register.vue';
-import Messages from './components/Messages.vue';
-import ProfileEdit from './components/ProfileEdit.vue';
-import AdForm from './components/AdForm.vue';
-import AdDetails from './components/AdDetails.vue';
+import AdList from './components/ads/AdList.vue';
+import Login from './components/auth/Login.vue';
+import Register from './components/auth/Register.vue';
+import Messages from './components/messages/Messages.vue';
+import ProfileEdit from './components/auth/ProfileEdit.vue';
+import AdForm from './components/ads/AdForm.vue';
+import AdDetails from './components/ads/AdDetails.vue';
 import NotFound from './components/core/NotFound.vue';
 
 const routes = [
@@ -34,7 +35,7 @@ const router = new VueRouter({
 router.beforeEach((to, from, next) => {
     const requiresAuth = to.matched.some(record => record.meta.requireAuth);
     const requiresGuest = to.matched.some(record => record.meta.requireGuest);
-    const isAuth = firebase.auth().currentUser;
+    const isAuth = store.getters.user;
     if (requiresAuth && !isAuth) {
         next("/login");
     } else if (requiresGuest && isAuth) {

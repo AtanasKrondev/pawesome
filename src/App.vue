@@ -11,7 +11,7 @@
           </md-button>
         </span>
 
-        <app-menu :user="user"></app-menu>
+        <app-menu></app-menu>
       </md-app-toolbar>
 
       <md-app-drawer :md-active.sync="navDrawer">
@@ -28,8 +28,8 @@
 <script>
 import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/default.css";
-import * as firebase from "firebase/app";
-import "firebase/auth";
+// import * as firebase from "firebase/app";
+// import "firebase/auth";
 
 import AppNavDrawer from "./components/core/NavDrawer.vue";
 import AppMenu from "./components/core/Menu.vue";
@@ -46,11 +46,6 @@ export default {
       user: null
     };
   },
-  created() {
-    firebase.auth().onAuthStateChanged(user => {
-      this.user = user;
-    });
-  }
 };
 </script>
 

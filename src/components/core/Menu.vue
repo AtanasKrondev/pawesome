@@ -7,8 +7,14 @@
       <md-icon>chat</md-icon>
     </md-button>
     <md-menu v-if="user">
-      <md-button md-menu-trigger class="md-icon-button">
-        <md-avatar class="md-avatar-icon">A</md-avatar>
+      <md-button md-menu-trigger>
+        {{user.displayName}}
+        <md-avatar v-if="user.photoURL">
+          <img :src="user.photoURL" alt="avatar" />
+        </md-avatar>
+        <md-avatar v-else class="md-avatar-icon">
+          <md-icon>account_circle</md-icon>
+        </md-avatar>
       </md-button>
       <md-menu-content>
         <md-menu-item to="/ads">
@@ -29,22 +35,17 @@
 </template>
 
 <script>
-import * as firebase from "firebase/app";
-import "firebase/auth";
+// import * as firebase from "firebase/app";
+// import "firebase/auth";
 export default {
-  props: {
-    user: Object
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    }
   },
   methods: {
     logout() {
-      firebase
-        .auth()
-        .signOut()
-        .then(result => {
-          console.log(result);
-          this.$router.push("/auth");
-        })
-        .catch(err => console.log(err));
+      this.$store.dispatch("logout");
     }
   }
 };

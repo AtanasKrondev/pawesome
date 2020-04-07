@@ -59,20 +59,20 @@
             <div class="md-title">Email</div>
             <div class="md-subtitle">Change your email. Requires reauthentication!</div>
           </md-card-header>
-          <form @submit.prevent="updateEmail">
+          <form @submit.prevent="openDialog('updateEmail')">
             <md-card-content>
-              <md-field :class="{'md-invalid':$v.email.email.$error}">
+              <md-field :class="{'md-invalid':$v.email.$error}">
                 <label for="email">New Email</label>
                 <md-input
-                  v-model="email.email"
-                  @blur="$v.email.email.$touch"
+                  v-model="email"
+                  @blur="$v.email.$touch"
                   type="email"
                   name="email"
                   id="email"
                   required
                 ></md-input>
-                <span class="md-error" v-if="!$v.email.email.required">The email is required</span>
-                <span class="md-error" v-else-if="!$v.email.email.email">Invalid email format</span>
+                <span class="md-error" v-if="!$v.email.required">The email is required</span>
+                <span class="md-error" v-else-if="!$v.email.email">Invalid email format</span>
               </md-field>
             </md-card-content>
             <md-card-actions>
@@ -92,7 +92,7 @@
             <div class="md-title">Password</div>
             <div class="md-subtitle">Change your password. Requires reauthentication!</div>
           </md-card-header>
-          <form @submit.prevent="updatePassword">
+          <form @submit.prevent="openDialog('updatePassword')">
             <md-card-content>
               <md-field :class="{'md-invalid':$v.password.password.$error}">
                 <label for="password">New Password</label>
@@ -141,10 +141,39 @@
         </md-card>
       </md-tab>
     </md-tabs>
+    <md-dialog :md-active.sync="showDialog">
+      <md-dialog-title>Confirm current password</md-dialog-title>
+      <form @submit.prevent="submitDialog">
+        <md-dialog-content>
+          <md-field :class="{'md-invalid':$v.confirmPassword.$error}">
+            <label for="confirm-password">Confirm Password</label>
+            <md-input
+              v-model="confirmPassword"
+              @blur="$v.confirmPassword.$touch"
+              type="password"
+              name="confirm-password"
+              id="confirm-password"
+              required
+            ></md-input>
+            <span class="md-error" v-if="!$v.confirmPassword.required">The password is required</span>
+            <span
+              class="md-error"
+              v-else-if="!$v.confirmPassword.minLength||!$v.confirmPassword.maxLength"
+            >Password must be between 6 and 24 symbols</span>
+          </md-field>
+        </md-dialog-content>
+        <md-dialog-actions>
+          <md-button class="md-primary" @click="showDialog = false">Cancel</md-button>
+          <md-button type="submit" class="md-primary md-raised" @click="submitDialog">Submit</md-button>
+        </md-dialog-actions>
+      </form>
+    </md-dialog>
   </div>
 </template>
 
 <script>
+import * as firebase from "firebase/app";
+import "firebase/auth";
 import { validationMixin } from "vuelidate";
 import {
   required,
@@ -154,30 +183,65 @@ import {
   sameAs,
   helpers
 } from "vuelidate/lib/validators";
-
 const photoURL = helpers.regex(
   "photoURL",
   /^https?:\/\/.*\.(?:png|jpg|jpeg|gif)$/
 );
-
 export default {
-  name: 'ProfileEdit',
+  name: "ProfileEdit",
   data() {
     return {
       profile: { displayName: null, photoURL: null },
-      email: { email: null },
-      password: { password: null, repassword: null }
+      email: null,
+      password: { password: null, repassword: null },
+      confirmPassword: null,
+      showDialog: false,
+      updateProperty: null
     };
+  },
+  created() {
+    this.profile.displayName = this.$store.getters.user.displayName;
+    this.profile.photoURL = this.$store.getters.user.photoURL;
+    this.email = this.$store.getters.user.email;
   },
   methods: {
     updateProfile() {
-      console.log({ ...this.profile });
+      const payload = {
+        displayName: this.profile.displayName,
+        photoURL: this.profile.photoURL
+      };
+      this.$store.dispatch("updateProfile", payload);
     },
-    updateEmail() {
-      console.log({ ...this.email });
+    openDialog(value) {
+      this.showDialog = true;
+      this.updateProperty = value;
     },
-    updatePassword() {
-      console.log({ ...this.password });
+    submitDialog() {
+      this.showDialog = false;
+      const payload = {
+        email: this.$store.getters.user.email,
+        password: this.confirmPassword
+      };
+      firebase
+        .auth()
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(() => {
+          if (this.updateProperty === "updateEmail") {
+            this.$store.dispatch("updateEmail", this.email);
+            console.log("Email updated");
+          }
+          if (this.updateProperty === "updatePassword") {
+            firebase
+              .auth()
+              .currentUser.updatePassword(this.password.password)
+              .then(() => {
+                console.log("Password updated");
+              })
+              .catch(err => console.log(err));
+          }
+          this.updateProperty = null;
+        })
+        .catch(err => console.log(err));
     }
   },
   mixins: [validationMixin],
@@ -190,12 +254,15 @@ export default {
       },
       photoURL: { required, photoURL }
     },
-    email: {
-      email: { required, email }
-    },
+    email: { required, email },
     password: {
       password: { required, minLength: minLength(6), maxLength: maxLength(24) },
       repassword: { required, sameAs: sameAs("password") }
+    },
+    confirmPassword: {
+      required,
+      minLength: minLength(6),
+      maxLength: maxLength(24)
     }
   }
 };
