@@ -2,7 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router.js'
 import store from './store.js'
+import firebaseConfig from './firebaseConfig.js'
 import firebase from 'firebase/app'
+import 'firebase/firestore'
+import "firebase/auth";
+import { firestorePlugin } from 'vuefire'
 
 import {
   MdApp,
@@ -43,17 +47,11 @@ Vue.use(MdDivider)
 Vue.use(MdSwitch)
 Vue.use(MdDialog)
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAiWeqZkIPopGzq9DgRwN4CFLqeSvHQ1Go",
-  authDomain: "paw-esome.firebaseapp.com",
-  databaseURL: "https://paw-esome.firebaseio.com",
-  projectId: "paw-esome",
-  storageBucket: "paw-esome.appspot.com",
-  messagingSenderId: "91561704662",
-  appId: "1:91561704662:web:d4b07f88c1182779cedd77"
-};
+Vue.use(firestorePlugin)
 
 firebase.initializeApp(firebaseConfig);
+export const db = firebase.firestore();
+export const auth = firebase.auth();
 
 let app;
 

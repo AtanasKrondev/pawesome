@@ -28,9 +28,6 @@
 <script>
 import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/default.css";
-// import * as firebase from "firebase/app";
-// import "firebase/auth";
-
 import AppNavDrawer from "./components/core/NavDrawer.vue";
 import AppMenu from "./components/core/Menu.vue";
 
@@ -43,7 +40,7 @@ export default {
   data() {
     return {
       navDrawer: false,
-      user: null
+      user: null,
     };
   },
 };

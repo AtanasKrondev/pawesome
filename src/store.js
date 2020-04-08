@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import * as firebase from "firebase/app";
-import "firebase/auth";
+// import * as firebase from "firebase/app";
+// import "firebase/auth";
+import { auth } from "./main.js"
 import router from './router.js'
 
 Vue.use(Vuex);
@@ -25,8 +26,7 @@ const store = new Vuex.Store({
     },
     actions: {
         register: ({ commit }, payload) => {
-            firebase
-                .auth()
+            auth
                 .createUserWithEmailAndPassword(payload.email, payload.password)
                 .then((response) => {
                     commit('setUser', response.user);
@@ -35,8 +35,7 @@ const store = new Vuex.Store({
                 .catch(err => console.log(err));
         },
         login: ({ commit }, payload) => {
-            firebase
-                .auth()
+            auth
                 .signInWithEmailAndPassword(payload.email, payload.password)
                 .then((response) => {
                     commit('setUser', response.user);
@@ -45,8 +44,7 @@ const store = new Vuex.Store({
                 .catch(err => console.log(err));
         },
         logout: ({ commit }) => {
-            firebase
-                .auth()
+            auth
                 .signOut()
                 .then(() => {
                     commit('setUser', null);
@@ -58,16 +56,14 @@ const store = new Vuex.Store({
             commit('setUser', payload);
         },
         updateProfile: ({ commit }, payload) => {
-            const user = firebase.auth().currentUser;
-            user.updateProfile(payload)
+            auth.currentUser.updateProfile(payload)
                 .then(() => {
                     commit('updateUser', payload);
                 })
                 .catch(err => console.log(err));
         },
         updateEmail: ({ commit }, payload) => {
-            const user = firebase.auth().currentUser;
-            user.updateEmail(payload)
+            auth.currentUser.updateEmail(payload)
                 .then(() => {
                     commit('updateUser', { email: payload });
                 })

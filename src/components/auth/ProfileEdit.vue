@@ -172,8 +172,9 @@
 </template>
 
 <script>
-import * as firebase from "firebase/app";
-import "firebase/auth";
+// import * as firebase from "firebase/app";
+// import "firebase/auth";
+import { auth } from "../../main.js";
 import { validationMixin } from "vuelidate";
 import {
   required,
@@ -222,8 +223,9 @@ export default {
         email: this.$store.getters.user.email,
         password: this.confirmPassword
       };
-      firebase
-        .auth()
+      // firebase
+      //   .auth()
+      auth
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(() => {
           if (this.updateProperty === "updateEmail") {
@@ -231,9 +233,10 @@ export default {
             console.log("Email updated");
           }
           if (this.updateProperty === "updatePassword") {
-            firebase
-              .auth()
-              .currentUser.updatePassword(this.password.password)
+            // firebase
+            //   .auth()
+            auth.currentUser
+              .updatePassword(this.password.password)
               .then(() => {
                 console.log("Password updated");
               })

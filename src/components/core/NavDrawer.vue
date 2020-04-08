@@ -1,7 +1,7 @@
 <template>
   <md-list>
     <md-list-item>
-      <md-button to="/newad" class="md-raised md-primary">
+      <md-button to="/post-ad" class="md-raised md-primary">
         <md-icon>add</md-icon>Post Ad
       </md-button>
     </md-list-item>
@@ -15,7 +15,7 @@
       <span class="md-list-item-text">Breeding</span>
     </md-list-item>
     <md-list-item to="/ads">
-      <span class="md-list-item-text">Pet Wanted</span>
+      <span class="md-list-item-text">Wanted</span>
     </md-list-item>
     <md-list-item to="/ads">
       <span class="md-list-item-text">Friendship</span>

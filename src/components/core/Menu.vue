@@ -7,10 +7,9 @@
       <md-icon>chat</md-icon>
     </md-button>
     <md-menu v-if="user">
-      <md-button md-menu-trigger>
-        {{user.displayName}}
+      <md-button class="md-icon-button" md-menu-trigger>
         <md-avatar v-if="user.photoURL">
-          <img :src="user.photoURL" alt="avatar" />
+          <img :src="user.photoURL" />
         </md-avatar>
         <md-avatar v-else class="md-avatar-icon">
           <md-icon>account_circle</md-icon>

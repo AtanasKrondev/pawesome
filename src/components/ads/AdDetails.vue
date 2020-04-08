@@ -2,55 +2,71 @@
   <div class="md-layout md-alignment-top-center">
     <md-card class="md-layout-item md-size-50 md-xsmall-size-100">
       <md-card-header>
-        <div class="md-title">Bobtail Boxer - 100lv</div>
+        <div class="md-title">{{ad.title}}{{ad.price?` - ${ad.price} BGN`: ''}}</div>
         <div class="md-subhead">
-          <md-icon>location_on</md-icon> Bulgaria | 
-          <md-icon>access_time</md-icon> 27/03/2020 13:45
+          <span v-if="ad.location">
+            <md-icon>location_on</md-icon>
+            {{ad.location}}
+          </span>
+          <span v-if="ad.createdAt">
+            <md-icon>access_time</md-icon>
+            {{ad.createdAt.toDate()}}
+          </span>
         </div>
       </md-card-header>
       <md-card-media>
-        <img src="https://images.dog.ceo/breeds/boxer/n02108089_2482.jpg" alt="Boxer" />
+        <img :src="ad.imageUrl" :alt="ad.title" />
       </md-card-media>
-      <md-card-content>Mnogo hubav kucho</md-card-content>
+      <md-card-content>{{ad.description}}</md-card-content>
     </md-card>
     <md-card class="md-layout-item md-size-25 md-xsmall-size-100">
       <md-card-header>
-        <md-avatar>
-          <img src="https://images.dog.ceo/breeds/boxer/n02108089_11687.jpg" alt="User" />
+        <md-avatar v-if="ad.authorPhoto">
+          <img :src="ad.authorPhoto" />
+        </md-avatar>
+        <md-avatar v-else class="md-avatar-icon">
+          <md-icon>account_circle</md-icon>
         </md-avatar>
 
-        <div class="md-title">Boxer breeder 69</div>
+        <div class="md-title">{{ad.authorName || 'Anonimous'}}</div>
         <div class="md-subhead">
-          <md-icon>location_on</md-icon> Bulgaria
+          <md-icon>location_on</md-icon>
+          {{ad.location}}
         </div>
       </md-card-header>
       <md-card-actions md-alignment="left">
         <md-button class="md-raised md-primary">
-          <md-icon>bookmark</md-icon> Save Ad
+          <md-icon>bookmark</md-icon>Save Ad
         </md-button>
         <md-button class="md-raised md-primary">
-          <md-icon>chat</md-icon> Contact
+          <md-icon>chat</md-icon>Contact
         </md-button>
       </md-card-actions>
       <md-card-content>
         <md-list>
           <md-list-item>
-            <span class="md-body-2">Ad Type:</span>Sell
+            <span class="md-body-2">Ad Type:</span>
+            {{ad.adType | capitalize}}
           </md-list-item>
           <md-list-item>
-            <span class="md-body-2">Breed:</span>Boxer
+            <span class="md-body-2">Breed:</span>
+            {{ad.breed | capitalize}}
           </md-list-item>
           <md-list-item>
-            <span class="md-body-2">Location</span>Bulgaria
+            <span class="md-body-2">Location</span>
+            {{ad.location || '-'}}
           </md-list-item>
           <md-list-item>
-            <span class="md-body-2">Pedigree</span>Yes
+            <span class="md-body-2">Pedigree</span>
+            {{ad.pedigree? 'Yes': 'No'}}
           </md-list-item>
           <md-list-item>
-            <span class="md-body-2">Age</span>3 years
+            <span class="md-body-2">Age</span>
+            {{ad.age?`${ad.age} years`:'-'}}
           </md-list-item>
           <md-list-item>
-            <span class="md-body-2">Gender</span>Male
+            <span class="md-body-2">Gender</span>
+            {{ad.gender | capitalize}}
           </md-list-item>
         </md-list>
       </md-card-content>
@@ -59,9 +75,23 @@
 </template>
 
 <script>
+import { db } from "../../main.js";
+import filterMixin from "../../mixin/filterMixin.js";
+
 export default {
-  name: 'AdDetails',
-}
+  name: "AdDetails",
+  data() {
+    return {
+      ad: {}
+    };
+  },
+  firestore() {
+    return {
+      ad: db.collection("ads").doc(this.$route.params.id)
+    };
+  },
+  mixins: [filterMixin]
+};
 </script>
 
 <style lang="scss" scoped>

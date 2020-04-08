@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-// import * as firebase from "firebase/app";
-// import "firebase/auth";
 import store from './store.js'
 
 import AdList from './components/ads/AdList.vue';
@@ -17,10 +15,10 @@ const routes = [
     { path: '/ads', component: AdList },
     { path: '/login', component: Login, meta: { requireGuest: true } },
     { path: '/register', component: Register, meta: { requireGuest: true } },
-    { path: '/newad', component: AdForm, meta: { requireAuth: true } },
+    { path: '/post-ad', component: AdForm, meta: { requireAuth: true } },
     { path: '/profile', component: ProfileEdit, meta: { requireAuth: true } },
     { path: '/messages', component: Messages, meta: { requireAuth: true } },
-    { path: '/details', component: AdDetails },
+    { path: '/details/:id', name: 'details', component: AdDetails },
     { path: '/', redirect: '/ads' },
     { path: '*', component: NotFound },
 ]

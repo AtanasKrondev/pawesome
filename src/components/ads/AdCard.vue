@@ -1,21 +1,34 @@
 <template>
   <md-card>
     <md-card-media>
-      <img src="https://images.dog.ceo/breeds/shihtzu/n02086240_3175.jpg" alt="Dog" />
+      <router-link :to="{name: 'details', params: {id:ad.id}}">
+        <img :src="ad.imageUrl" :alt="ad.title" />
+      </router-link>
     </md-card-media>
 
     <md-card-header>
-      <div class="md-title">Bobtail Boxer - 100lv</div>
+      <div class="md-title">{{ad.title}}{{ad.price?` - ${ad.price} BGN`: ''}}</div>
       <div class="md-subhead">
-        <md-icon>location_on</md-icon>Bulgaria |
-        <md-icon>access_time</md-icon>27/03/2020 13:45
+        <span v-if="ad.location">
+          <md-icon>location_on</md-icon>
+          {{ad.location}}
+        </span>
+        <span v-if="ad.createdAt">
+          <md-icon>access_time</md-icon>
+          {{ad.createdAt.toDate()}}
+        </span>
       </div>
+      <router-link :to="{name: 'details', params: {id:ad.id}}">View More...</router-link>
     </md-card-header>
   </md-card>
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    ad: Object
+  }
+};
 </script>
 
 <style lang="scss" scoped>
