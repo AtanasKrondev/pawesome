@@ -8,6 +8,7 @@
 
     <md-card-header>
       <div class="md-title">{{ad.title}}{{ad.price?` - ${ad.price} BGN`: ''}}</div>
+      <div class="md-subhead">{{ad.adType|capitalize}} | {{ad.breed|capitalize}}</div>
       <div class="md-subhead">
         <span v-if="ad.location">
           <md-icon>location_on</md-icon>
@@ -15,7 +16,7 @@
         </span>
         <span v-if="ad.createdAt">
           <md-icon>access_time</md-icon>
-          {{ad.createdAt.toDate()}}
+          {{ad.createdAt.toDate() | fromNow}}
         </span>
       </div>
       <router-link :to="{name: 'details', params: {id:ad.id}}">View More...</router-link>
@@ -24,10 +25,13 @@
 </template>
 
 <script>
+import filterMixin from "../../mixin/filterMixin.js";
+
 export default {
   props: {
     ad: Object
-  }
+  },
+  mixins: [filterMixin]
 };
 </script>
 

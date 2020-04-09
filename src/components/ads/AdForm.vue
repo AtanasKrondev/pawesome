@@ -211,7 +211,7 @@ export default {
       const createdAt = firebase.firestore.FieldValue.serverTimestamp();
       db.collection("ads")
         .add({ authorId, authorName, authorPhoto, createdAt, ...this.form })
-        .then(() => this.$router.push("/ads"))
+        .then(() => this.$router.back())
         .catch(err => console.log(err));
     }
   },

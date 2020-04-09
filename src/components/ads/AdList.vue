@@ -1,7 +1,9 @@
 <template>
   <div>
     <app-ad-search></app-ad-search>
-    <div class="md-layout md-alignment-top-left">
+    <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
+    <div v-else class="md-layout md-alignment-top-left">
+      <p v-if="noResult" class="md-subheading">No ads found</p>
       <div
         v-for="a in ads"
         :key="a.id"
@@ -25,12 +27,67 @@ export default {
     AppAdSearch
   },
   data() {
-    return { ads: [] };
+    return { ads: [], loading: false, noResult: false };
   },
-  firestore() {
-    return {
-      ads: db.collection("ads").orderBy('createdAt', 'desc')
-    };
+  watch: {
+    "$route.params": {
+      immediate: true,
+      handler({ type, breed }) {
+        this.loading = true;
+        this.noResult = false;
+        if (type === "all" && breed === "all") {
+          this.$bind(
+            "ads",
+            db.collection("ads").orderBy("createdAt", "desc")
+          ).then(doc => {
+            this.loading = false;
+            if (!doc.length) {
+              this.noResult = true;
+            }
+          });
+        } else if (breed === "all") {
+          this.$bind(
+            "ads",
+            db
+              .collection("ads")
+              .where("adType", "==", type)
+              .orderBy("createdAt", "desc")
+          ).then(doc => {
+            this.loading = false;
+            if (!doc.length) {
+              this.noResult = true;
+            }
+          });
+        } else if (type === "all") {
+          this.$bind(
+            "ads",
+            db
+              .collection("ads")
+              .where("breed", "==", breed)
+              .orderBy("createdAt", "desc")
+          ).then(doc => {
+            this.loading = false;
+            if (!doc.length) {
+              this.noResult = true;
+            }
+          });
+        } else {
+          this.$bind(
+            "ads",
+            db
+              .collection("ads")
+              .where("breed", "==", breed)
+              .where("adType", "==", type)
+              .orderBy("createdAt", "desc")
+          ).then(doc => {
+            this.loading = false;
+            if (!doc.length) {
+              this.noResult = true;
+            }
+          });
+        }
+      }
+    }
   }
 };
 </script>

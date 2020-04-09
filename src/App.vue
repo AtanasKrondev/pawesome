@@ -14,7 +14,7 @@
         <app-menu></app-menu>
       </md-app-toolbar>
 
-      <md-app-drawer :md-active.sync="navDrawer">
+      <md-app-drawer :md-active.sync="navDrawer" md-swipeable>
         <app-nav-drawer></app-nav-drawer>
       </md-app-drawer>
 
@@ -40,9 +40,9 @@ export default {
   data() {
     return {
       navDrawer: false,
-      user: null,
+      user: null
     };
-  },
+  }
 };
 </script>
 

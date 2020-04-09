@@ -12,14 +12,14 @@ import AdDetails from './components/ads/AdDetails.vue';
 import NotFound from './components/core/NotFound.vue';
 
 const routes = [
-    { path: '/ads', component: AdList },
+    { path: '/ads/:type/:breed', name: 'ads', component: AdList },
     { path: '/login', component: Login, meta: { requireGuest: true } },
     { path: '/register', component: Register, meta: { requireGuest: true } },
     { path: '/post-ad', component: AdForm, meta: { requireAuth: true } },
     { path: '/profile', component: ProfileEdit, meta: { requireAuth: true } },
     { path: '/messages', component: Messages, meta: { requireAuth: true } },
     { path: '/details/:id', name: 'details', component: AdDetails },
-    { path: '/', redirect: '/ads' },
+    { path: '/', redirect: '/ads/all/all' },
     { path: '*', component: NotFound },
 ]
 
