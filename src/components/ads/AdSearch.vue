@@ -1,5 +1,5 @@
 <template>
-  <form novalidate class="md-layout" @submit.prevent="submit">
+  <form class="md-layout" @submit.prevent="submit">
     <div class="md-layout-item md-small-size-100">
       <md-field>
         <label for="type">Ad Type</label>

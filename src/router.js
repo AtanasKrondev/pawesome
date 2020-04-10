@@ -9,6 +9,7 @@ import Messages from './components/messages/Messages.vue';
 import ProfileEdit from './components/auth/ProfileEdit.vue';
 import AdForm from './components/ads/AdForm.vue';
 import AdDetails from './components/ads/AdDetails.vue';
+import MyAds from './components/ads/MyAds.vue';
 import NotFound from './components/core/NotFound.vue';
 
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
     { path: '/register', component: Register, meta: { requireGuest: true } },
     { path: '/post-ad', component: AdForm, meta: { requireAuth: true } },
     { path: '/profile', component: ProfileEdit, meta: { requireAuth: true } },
+    { path: '/my-ads', component: MyAds, meta: { requireAuth: true } },
     { path: '/messages', component: Messages, meta: { requireAuth: true } },
     { path: '/details/:id', name: 'details', component: AdDetails },
     { path: '/', redirect: '/ads/all/all' },

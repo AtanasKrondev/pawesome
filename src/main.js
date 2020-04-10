@@ -27,6 +27,7 @@ import {
   MdSwitch,
   MdDialog,
   MdProgress,
+  MdEmptyState,
 } from 'vue-material/dist/components'
 
 Vue.config.productionTip = false;
@@ -48,6 +49,7 @@ Vue.use(MdDivider)
 Vue.use(MdSwitch)
 Vue.use(MdDialog)
 Vue.use(MdProgress)
+Vue.use(MdEmptyState)
 
 Vue.use(firestorePlugin)
 

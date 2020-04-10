@@ -68,4 +68,11 @@ export default {
   width: 230px;
   max-width: calc(100vw - 125px);
 }
+
+.md-progress-bar {
+  margin-left: -16px;
+  margin-right: -16px;
+  margin-top: -16px;
+}
+
 </style>

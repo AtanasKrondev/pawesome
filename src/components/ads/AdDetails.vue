@@ -2,7 +2,7 @@
   <div>
     <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
     <template v-else>
-      <p v-if="noResult" class="md-subheading">Ad does not exist</p>
+      <app-not-found v-if="noResult"></app-not-found>
       <div v-else class="md-layout md-alignment-top-center">
         <md-card class="md-layout-item md-size-50 md-small-size-100">
           <md-card-header>
@@ -22,6 +22,11 @@
             <img :src="ad.imageUrl" :alt="ad.title" />
           </md-card-media>
           <md-card-content>{{ad.description}}</md-card-content>
+          <md-card-actions md-alignment="left">
+            <md-button @click="$router.back()" class="md-raised md-primary">
+              <md-icon>arrow_back_ios</md-icon>Back
+            </md-button>
+          </md-card-actions>
         </md-card>
         <md-card class="md-layout-item md-size-40 md-small-size-100">
           <md-card-header>
@@ -39,11 +44,17 @@
             </div>
           </md-card-header>
           <md-card-actions md-alignment="left">
-            <md-button class="md-raised md-primary">
+            <md-button v-if="!user" to="/login">
+              <md-icon>exit_to_app</md-icon>Login to connect
+            </md-button>
+            <md-button v-if="user" class="md-raised md-primary">
               <md-icon>bookmark</md-icon>Save Ad
             </md-button>
-            <md-button class="md-raised md-primary">
+            <md-button v-if="user && !isAuthor" class="md-raised md-primary">
               <md-icon>chat</md-icon>Contact
+            </md-button>
+            <md-button v-if="user && isAuthor" class="md-raised md-primary">
+              <md-icon>edit</md-icon>Edit Ad
             </md-button>
           </md-card-actions>
           <md-card-content>
@@ -83,9 +94,11 @@
 <script>
 import { db } from "../../main.js";
 import filterMixin from "../../mixin/filterMixin.js";
+import AppNotFound from "../core/NotFound";
 
 export default {
   name: "AdDetails",
+  components: { AppNotFound },
   data() {
     return {
       ad: {},
@@ -93,11 +106,15 @@ export default {
       noResult: false
     };
   },
-  // firestore() {
-  //   return {
-  //     ad: db.collection("ads").doc(this.$route.params.id)
-  //   };
-  // },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+    isAuthor() {
+      if (!this.user) return false;
+      return this.user.uid === this.ad.authorId;
+    }
+  },
   watch: {
     "$route.params": {
       immediate: true,

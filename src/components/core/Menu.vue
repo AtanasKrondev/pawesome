@@ -16,7 +16,7 @@
         </md-avatar>
       </md-button>
       <md-menu-content>
-        <md-menu-item to="/ads">
+        <md-menu-item to="/my-ads">
           <md-icon>library_books</md-icon>My Ads
         </md-menu-item>
         <md-menu-item to="/ads">

@@ -1,9 +1,22 @@
 <template>
   <div>
-    <app-ad-search></app-ad-search>
     <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
-    <div v-else class="md-layout md-alignment-top-left">
-      <p v-if="noResult" class="md-subheading">No ads found</p>
+    <app-ad-search v-if="!loading"></app-ad-search>
+    <div v-if="!loading" class="md-layout md-alignment-top-left">
+      <md-empty-state
+        v-if="!ads.length"
+        class="md-layout-item"
+        md-icon="pets"
+        md-label="No ads found"
+        md-description="You can post the first ad in this category"
+      >
+        <md-button to="/post-ad" class="md-raised md-primary">
+          <md-icon>add</md-icon>Post Ad
+        </md-button>
+        <md-button @click="$router.back()" class="md-raised md-primary">
+          <md-icon>arrow_back_ios</md-icon>Back
+        </md-button>
+      </md-empty-state>
       <div
         v-for="a in ads"
         :key="a.id"
@@ -27,24 +40,18 @@ export default {
     AppAdSearch
   },
   data() {
-    return { ads: [], loading: false, noResult: false };
+    return { ads: [], loading: false };
   },
   watch: {
     "$route.params": {
       immediate: true,
       handler({ type, breed }) {
         this.loading = true;
-        this.noResult = false;
         if (type === "all" && breed === "all") {
           this.$bind(
             "ads",
             db.collection("ads").orderBy("createdAt", "desc")
-          ).then(doc => {
-            this.loading = false;
-            if (!doc.length) {
-              this.noResult = true;
-            }
-          });
+          ).then(() => (this.loading = false));
         } else if (breed === "all") {
           this.$bind(
             "ads",
@@ -52,12 +59,7 @@ export default {
               .collection("ads")
               .where("adType", "==", type)
               .orderBy("createdAt", "desc")
-          ).then(doc => {
-            this.loading = false;
-            if (!doc.length) {
-              this.noResult = true;
-            }
-          });
+          ).then(() => (this.loading = false));
         } else if (type === "all") {
           this.$bind(
             "ads",
@@ -65,12 +67,7 @@ export default {
               .collection("ads")
               .where("breed", "==", breed)
               .orderBy("createdAt", "desc")
-          ).then(doc => {
-            this.loading = false;
-            if (!doc.length) {
-              this.noResult = true;
-            }
-          });
+          ).then(() => (this.loading = false));
         } else {
           this.$bind(
             "ads",
@@ -79,12 +76,7 @@ export default {
               .where("breed", "==", breed)
               .where("adType", "==", type)
               .orderBy("createdAt", "desc")
-          ).then(doc => {
-            this.loading = false;
-            if (!doc.length) {
-              this.noResult = true;
-            }
-          });
+          ).then(() => (this.loading = false));
         }
       }
     }

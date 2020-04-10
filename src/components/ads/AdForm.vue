@@ -1,6 +1,6 @@
 <template>
   <div>
-    <form novalidate class="md-layout md-alignment-top-center" @submit.prevent="submit">
+    <form class="md-layout md-alignment-top-center" @submit.prevent="submit">
       <md-card class="md-layout-item md-size-50 md-small-size-100">
         <md-card-header>
           <div class="md-title">Post your ad</div>
@@ -165,7 +165,7 @@
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { validationMixin } from "vuelidate";
-import filterMixin from "../../mixin/filterMixin.js"
+import filterMixin from "../../mixin/filterMixin.js";
 import {
   required,
   minLength,
@@ -205,9 +205,9 @@ export default {
   },
   methods: {
     submit() {
-      const authorId = this.$store.getters.user.uid;
-      const authorName = this.$store.getters.user.displayName;
-      const authorPhoto = this.$store.getters.user.photoURL;
+      const authorId = this.user.uid;
+      const authorName = this.user.displayName;
+      const authorPhoto = this.user.photoURL;
       const createdAt = firebase.firestore.FieldValue.serverTimestamp();
       db.collection("ads")
         .add({ authorId, authorName, authorPhoto, createdAt, ...this.form })
@@ -232,6 +232,11 @@ export default {
       age: { decimal, minValue: minValue(0) }
     }
   },
+  computed: {
+    user() {
+      return this.$store.getters.user;
+    },
+  }
 };
 </script>
 
