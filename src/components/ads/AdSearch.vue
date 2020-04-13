@@ -3,8 +3,8 @@
     <div class="md-layout-item md-small-size-100">
       <md-field>
         <label for="type">Ad Type</label>
-        <md-select v-model="type" name="type" id="type">
-          <md-option value="all">ALL</md-option>
+        <md-select v-model="type" name="type" id="type" placeholder="Ad Type (ALL)">
+          <md-option value>ALL</md-option>
           <md-option v-for="(t,i) in params.types" :key="i" :value="t">{{t | capitalize}}</md-option>
         </md-select>
       </md-field>
@@ -13,8 +13,8 @@
     <div class="md-layout-item md-small-size-100">
       <md-field>
         <label for="breed">Breed</label>
-        <md-select v-model="breed" name="breed" id="breed">
-          <md-option value="all">ALL</md-option>
+        <md-select v-model="breed" name="breed" id="breed" placeholder="Breed (ALL)">
+          <md-option value>ALL</md-option>
           <md-option v-for="(t,i) in params.breeds" :key="i" :value="t">{{t | capitalize}}</md-option>
         </md-select>
       </md-field>
@@ -35,8 +35,8 @@ import filterMixin from "../../mixin/filterMixin.js";
 export default {
   data() {
     return {
-      type: "all",
-      breed: "all",
+      type: "",
+      breed: "",
       params: {
         breeds: [],
         types: []
@@ -51,7 +51,7 @@ export default {
   methods: {
     submit() {
       this.$router
-        .push({ name: "ads", params: { type: this.type, breed: this.breed } })
+        .push({ name: "ads", query: { type: this.type, breed: this.breed } })
         .catch(() => console.log("You are already here"));
     }
   },

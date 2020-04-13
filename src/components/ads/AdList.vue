@@ -43,16 +43,16 @@ export default {
     return { ads: [], loading: false };
   },
   watch: {
-    "$route.params": {
+    "$route.query": {
       immediate: true,
       handler({ type, breed }) {
         this.loading = true;
-        if (type === "all" && breed === "all") {
+        if (!type && !breed) {
           this.$bind(
             "ads",
             db.collection("ads").orderBy("createdAt", "desc")
           ).then(() => (this.loading = false));
-        } else if (breed === "all") {
+        } else if (!breed) {
           this.$bind(
             "ads",
             db
@@ -60,7 +60,7 @@ export default {
               .where("adType", "==", type)
               .orderBy("createdAt", "desc")
           ).then(() => (this.loading = false));
-        } else if (type === "all") {
+        } else if (!type) {
           this.$bind(
             "ads",
             db

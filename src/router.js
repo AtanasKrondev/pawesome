@@ -2,26 +2,28 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store.js'
 
-import AdList from './components/ads/AdList.vue';
-import Login from './components/auth/Login.vue';
-import Register from './components/auth/Register.vue';
-import Messages from './components/messages/Messages.vue';
-import ProfileEdit from './components/auth/ProfileEdit.vue';
-import AdForm from './components/ads/AdForm.vue';
-import AdDetails from './components/ads/AdDetails.vue';
-import MyAds from './components/ads/MyAds.vue';
-import NotFound from './components/core/NotFound.vue';
+const AdList = () => import('./components/ads/AdList.vue');
+const Login = () => import('./components/auth/Login.vue');
+const Register = () => import('./components/auth/Register.vue');
+const Messages = () => import('./components/messages/Messages.vue');
+const ProfileEdit = () => import('./components/auth/ProfileEdit.vue');
+const AdPost = () => import('./components/ads/AdPost.vue');
+const AdDetails = () => import('./components/ads/AdDetails.vue');
+const MyAds = () => import('./components/ads/MyAds.vue');
+const FollowedAds = () => import('./components/ads/FollowedAds.vue');
+const NotFound = () => import('./components/core/NotFound.vue');
 
 const routes = [
-    { path: '/ads/:type/:breed', name: 'ads', component: AdList },
+    { path: '/ads', name: 'ads', component: AdList },
     { path: '/login', component: Login, meta: { requireGuest: true } },
     { path: '/register', component: Register, meta: { requireGuest: true } },
-    { path: '/post-ad', component: AdForm, meta: { requireAuth: true } },
+    { path: '/post-ad', component: AdPost, meta: { requireAuth: true } },
     { path: '/profile', component: ProfileEdit, meta: { requireAuth: true } },
     { path: '/my-ads', component: MyAds, meta: { requireAuth: true } },
+    { path: '/followed-ads', component: FollowedAds, meta: { requireAuth: true } },
     { path: '/messages', component: Messages, meta: { requireAuth: true } },
     { path: '/details/:id', name: 'details', component: AdDetails },
-    { path: '/', redirect: '/ads/all/all' },
+    { path: '/', redirect: '/ads' },
     { path: '*', component: NotFound },
 ]
 

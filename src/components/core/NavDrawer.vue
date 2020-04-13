@@ -5,22 +5,22 @@
         <md-icon>add</md-icon>Post Ad
       </md-button>
     </md-list-item>
-    <md-list-item :to="{name: 'ads', params: {type:'all', breed: 'all'}}">
+    <md-list-item :to="{name: 'ads'}">
       <span class="md-list-item-text">Home</span>
     </md-list-item>
-    <md-list-item :to="{name: 'ads', params: {type:'adoption', breed: 'all'}}">
+    <md-list-item :to="{name: 'ads', query: {type:'adoption'}}">
       <span class="md-list-item-text">Adoption</span>
     </md-list-item>
-    <md-list-item :to="{name: 'ads', params: {type:'sale', breed: 'all'}}">
+    <md-list-item :to="{name: 'ads', query: {type:'sale'}}">
       <span class="md-list-item-text">Sale</span>
     </md-list-item>
-    <md-list-item :to="{name: 'ads', params: {type:'breeding', breed: 'all'}}">
+    <md-list-item :to="{name: 'ads', query: {type:'breeding'}}">
       <span class="md-list-item-text">Breeding</span>
     </md-list-item>
-    <md-list-item :to="{name: 'ads', params: {type:'wanted', breed: 'all'}}">
+    <md-list-item :to="{name: 'ads', query: {type:'wanted'}}">
       <span class="md-list-item-text">Wanted</span>
     </md-list-item>
-    <md-list-item :to="{name: 'ads', params: {type:'friendship', breed: 'all'}}">
+    <md-list-item :to="{name: 'ads', query: {type:'friendship'}}">
       <span class="md-list-item-text">Friendship</span>
     </md-list-item>
   </md-list>

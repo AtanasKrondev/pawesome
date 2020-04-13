@@ -47,14 +47,17 @@
             <md-button v-if="!user" to="/login">
               <md-icon>exit_to_app</md-icon>Login to connect
             </md-button>
-            <md-button v-if="user" class="md-raised md-primary">
-              <md-icon>bookmark</md-icon>Save Ad
-            </md-button>
             <md-button v-if="user && !isAuthor" class="md-raised md-primary">
               <md-icon>chat</md-icon>Contact
             </md-button>
             <md-button v-if="user && isAuthor" class="md-raised md-primary">
               <md-icon>edit</md-icon>Edit Ad
+            </md-button>
+            <md-button v-if="user && !isFollowed" @click="follow" class="md-raised md-primary">
+              <md-icon>star_outline</md-icon>Follow ad
+            </md-button>
+            <md-button v-if="user && isFollowed" @click="unfollow" class="md-raised md-primary">
+              <md-icon>star</md-icon>Unfollow ad
             </md-button>
           </md-card-actions>
           <md-card-content>
@@ -93,6 +96,8 @@
 
 <script>
 import { db } from "../../main.js";
+import firebase from "firebase/app";
+import "firebase/firestore";
 import filterMixin from "../../mixin/filterMixin.js";
 import AppNotFound from "../core/NotFound";
 
@@ -113,6 +118,13 @@ export default {
     isAuthor() {
       if (!this.user) return false;
       return this.user.uid === this.ad.authorId;
+    },
+    id() {
+      return this.$route.params.id;
+    },
+    isFollowed() {
+      if (!this.user) return false;
+      return this.ad.followedBy.includes(this.user.uid);
     }
   },
   watch: {
@@ -128,6 +140,24 @@ export default {
           }
         });
       }
+    }
+  },
+  methods: {
+    follow() {
+      db.collection("ads")
+        .doc(this.id)
+        .update({
+          followedBy: firebase.firestore.FieldValue.arrayUnion(this.user.uid)
+        })
+        .catch(err => console.log(err));
+    },
+    unfollow() {
+      db.collection("ads")
+        .doc(this.id)
+        .update({
+          followedBy: firebase.firestore.FieldValue.arrayRemove(this.user.uid)
+        })
+        .catch(err => console.log(err));
     }
   },
   mixins: [filterMixin]

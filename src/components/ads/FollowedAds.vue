@@ -3,21 +3,21 @@
     <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
     <div v-if="!loading" class="md-layout md-alignment-top-center">
       <md-empty-state
-        v-if="!myAds.length"
+        v-if="!followedAds.length"
         class="md-layout-item"
         md-icon="pets"
-        md-label="You don't have any ads"
-        md-description="Go aheadn and post your first ad"
+        md-label="You don't follow any ads"
+        md-description="Go ahead and find some"
       >
-        <md-button to="/post-ad" class="md-raised md-primary">
-          <md-icon>add</md-icon>Post Ad
+        <md-button to="/" class="md-raised md-primary">
+          <md-icon>home</md-icon>Home
         </md-button>
         <md-button @click="$router.back()" class="md-raised md-primary">
           <md-icon>arrow_back_ios</md-icon>Back
         </md-button>
       </md-empty-state>
       <md-list class="md-triple-line md-layout-item md-size-50 md-small-size-100">
-        <md-list-item v-for="(ad,i) in myAds" :key="i">
+        <md-list-item v-for="(ad,i) in followedAds" :key="i">
           <router-link class="img-container" :to="{name: 'details', params: {id:ad.id}}">
             <img :src="ad.imageUrl" />
           </router-link>
@@ -29,8 +29,11 @@
             </p>
           </div>
 
-          <md-button class="md-icon-button md-list-action">
-            <md-icon class="md-primary">edit</md-icon>
+          <md-button
+            class="md-icon-button md-list-action"
+            :to="{name: 'details', params: {id:ad.id}}"
+          >
+            <md-icon class="md-primary">visibility</md-icon>
           </md-button>
         </md-list-item>
       </md-list>
@@ -46,7 +49,7 @@ export default {
   mixins: [filterMixin],
   data() {
     return {
-      myAds: [],
+      followedAds: [],
       loading: false
     };
   },
@@ -63,10 +66,10 @@ export default {
           const { uid } = user;
           this.loading = true;
           this.$bind(
-            "myAds",
+            "followedAds",
             db
               .collection("ads")
-              .where("authorId", "==", uid)
+              .where("followedBy", "array-contains", uid)
               .orderBy("createdAt", "desc")
           )
             .then(() => (this.loading = false))

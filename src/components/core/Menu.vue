@@ -19,11 +19,11 @@
         <md-menu-item to="/my-ads">
           <md-icon>library_books</md-icon>My Ads
         </md-menu-item>
-        <md-menu-item to="/ads">
-          <md-icon>bookmarks</md-icon>Saved Ads
+        <md-menu-item to="/followed-ads">
+          <md-icon>star</md-icon>Followed Ads
         </md-menu-item>
         <md-menu-item to="/profile">
-          <md-icon>account_box</md-icon>Edit Profile
+          <md-icon>account_circle</md-icon>Edit Profile
         </md-menu-item>
         <md-menu-item @click="logout">
           <md-icon>close</md-icon>Logout

@@ -182,7 +182,7 @@ const imageUrl = helpers.regex(
 );
 
 export default {
-  name: "AdForm",
+  name: "AdPost",
   data() {
     return {
       form: {
