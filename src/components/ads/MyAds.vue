@@ -29,7 +29,7 @@
             </p>
           </div>
 
-          <md-button class="md-icon-button md-list-action">
+          <md-button class="md-icon-button md-list-action" :to="{name: 'edit', params: {id:ad.id}}">
             <md-icon class="md-primary">edit</md-icon>
           </md-button>
         </md-list-item>

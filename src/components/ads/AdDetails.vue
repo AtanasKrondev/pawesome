@@ -15,6 +15,7 @@
               <span v-if="ad.createdAt">
                 <md-icon>access_time</md-icon>
                 {{ad.createdAt.toDate() | localeDate}}
+                <span v-if="ad.editedAt"><md-icon>edit</md-icon> {{ad.editedAt.toDate() | localeDate}}</span>
               </span>
             </div>
           </md-card-header>
@@ -50,8 +51,12 @@
             <md-button v-if="user && !isAuthor" class="md-raised md-primary">
               <md-icon>chat</md-icon>Contact
             </md-button>
-            <md-button v-if="user && isAuthor" class="md-raised md-primary">
-              <md-icon>edit</md-icon>Edit Ad
+            <md-button
+              v-if="user && isAuthor"
+              class="md-raised md-primary"
+              :to="{name: 'edit', params: {id:ad.id}}"
+            >
+              <md-icon>edit</md-icon>Edit
             </md-button>
             <md-button v-if="user && !isFollowed" @click="follow" class="md-raised md-primary">
               <md-icon>star_outline</md-icon>Follow ad
@@ -123,7 +128,7 @@ export default {
       return this.$route.params.id;
     },
     isFollowed() {
-      if (!this.user) return false;
+      if (!this.user || !this.ad.followedBy) return false;
       return this.ad.followedBy.includes(this.user.uid);
     }
   },

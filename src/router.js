@@ -8,6 +8,7 @@ const Register = () => import('./components/auth/Register.vue');
 const Messages = () => import('./components/messages/Messages.vue');
 const ProfileEdit = () => import('./components/auth/ProfileEdit.vue');
 const AdPost = () => import('./components/ads/AdPost.vue');
+const AdEdit = () => import('./components/ads/AdEdit.vue');
 const AdDetails = () => import('./components/ads/AdDetails.vue');
 const MyAds = () => import('./components/ads/MyAds.vue');
 const FollowedAds = () => import('./components/ads/FollowedAds.vue');
@@ -18,6 +19,7 @@ const routes = [
     { path: '/login', component: Login, meta: { requireGuest: true } },
     { path: '/register', component: Register, meta: { requireGuest: true } },
     { path: '/post-ad', component: AdPost, meta: { requireAuth: true } },
+    { path: '/edit/:id', name: 'edit', component: AdEdit, meta: { requireAuth: true } },
     { path: '/profile', component: ProfileEdit, meta: { requireAuth: true } },
     { path: '/my-ads', component: MyAds, meta: { requireAuth: true } },
     { path: '/followed-ads', component: FollowedAds, meta: { requireAuth: true } },

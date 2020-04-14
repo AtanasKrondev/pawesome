@@ -2,6 +2,11 @@
   <div>
     <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
     <app-ad-search v-if="!loading"></app-ad-search>
+    <p class="md-caption">
+      {{loading?'Searching for':'Showing'}}
+      <span v-if="!$route.query.type &&!$route.query.breed">all</span>
+      <span v-else>{{$route.query.type || ''}} {{$route.query.breed || ''}}</span> ads
+    </p>
     <div v-if="!loading" class="md-layout md-alignment-top-left">
       <md-empty-state
         v-if="!ads.length"
