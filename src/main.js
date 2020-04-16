@@ -28,7 +28,9 @@ import {
   MdDialog,
   MdProgress,
   MdEmptyState,
+  MdSnackbar,
 } from 'vue-material/dist/components'
+import "vue-material/dist/vue-material.min.css";
 
 Vue.config.productionTip = false;
 Vue.use(MdApp)
@@ -50,6 +52,7 @@ Vue.use(MdSwitch)
 Vue.use(MdDialog)
 Vue.use(MdProgress)
 Vue.use(MdEmptyState)
+Vue.use(MdSnackbar)
 
 Vue.use(firestorePlugin)
 

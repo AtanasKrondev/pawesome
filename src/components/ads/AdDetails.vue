@@ -1,101 +1,106 @@
 <template>
   <div>
-    <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
-    <template v-else>
-      <app-not-found v-if="noResult"></app-not-found>
-      <div v-else class="md-layout md-alignment-top-center">
-        <md-card class="md-layout-item md-size-50 md-small-size-100">
-          <md-card-header>
-            <div class="md-title">{{ad.title}}{{ad.price?` - ${ad.price} BGN`: ''}}</div>
-            <div class="md-subhead">
-              <span v-if="ad.location">
-                <md-icon>location_on</md-icon>
-                {{ad.location}}
-              </span>
-              <span v-if="ad.createdAt">
-                <md-icon>access_time</md-icon>
-                {{ad.createdAt.toDate() | localeDate}}
-                <span v-if="ad.editedAt"><md-icon>edit</md-icon> {{ad.editedAt.toDate() | localeDate}}</span>
-              </span>
-            </div>
-          </md-card-header>
-          <md-card-media>
-            <img :src="ad.imageUrl" :alt="ad.title" />
-          </md-card-media>
-          <md-card-content>{{ad.description}}</md-card-content>
-          <md-card-actions md-alignment="left">
-            <md-button @click="$router.back()" class="md-raised md-primary">
-              <md-icon>arrow_back_ios</md-icon>Back
-            </md-button>
-          </md-card-actions>
-        </md-card>
-        <md-card class="md-layout-item md-size-40 md-small-size-100">
-          <md-card-header>
-            <md-avatar v-if="ad.authorPhoto">
-              <img :src="ad.authorPhoto" />
-            </md-avatar>
-            <md-avatar v-else class="md-avatar-icon">
-              <md-icon>account_circle</md-icon>
-            </md-avatar>
-
-            <div class="md-title">{{ad.authorName || 'Anonimous'}}</div>
-            <div class="md-subhead">
+    <app-not-found v-if="noResult"></app-not-found>
+    <div v-else class="md-layout md-alignment-top-center">
+      <md-card class="md-layout-item md-size-50 md-small-size-100">
+        <md-card-header>
+          <div class="md-title">{{ad.title}}{{ad.price?` - ${ad.price} BGN`: ''}}</div>
+          <div class="md-subhead">
+            <span v-if="ad.location">
               <md-icon>location_on</md-icon>
               {{ad.location}}
-            </div>
-          </md-card-header>
-          <md-card-actions md-alignment="left">
-            <md-button v-if="!user" to="/login">
-              <md-icon>exit_to_app</md-icon>Login to connect
-            </md-button>
-            <md-button v-if="user && !isAuthor" class="md-raised md-primary">
-              <md-icon>chat</md-icon>Contact
-            </md-button>
-            <md-button
-              v-if="user && isAuthor"
-              class="md-raised md-primary"
-              :to="{name: 'edit', params: {id:ad.id}}"
-            >
-              <md-icon>edit</md-icon>Edit
-            </md-button>
-            <md-button v-if="user && !isFollowed" @click="follow" class="md-raised md-primary">
-              <md-icon>star_outline</md-icon>Follow ad
-            </md-button>
-            <md-button v-if="user && isFollowed" @click="unfollow" class="md-raised md-primary">
-              <md-icon>star</md-icon>Unfollow ad
-            </md-button>
-          </md-card-actions>
-          <md-card-content>
-            <md-list>
-              <md-list-item>
-                <span class="md-body-2">Ad Type:</span>
-                {{ad.adType | capitalize}}
-              </md-list-item>
-              <md-list-item>
-                <span class="md-body-2">Breed:</span>
-                {{ad.breed | capitalize}}
-              </md-list-item>
-              <md-list-item>
-                <span class="md-body-2">Location</span>
-                {{ad.location || '-'}}
-              </md-list-item>
-              <md-list-item>
-                <span class="md-body-2">Pedigree</span>
-                {{ad.pedigree? 'Yes': 'No'}}
-              </md-list-item>
-              <md-list-item>
-                <span class="md-body-2">Age</span>
-                {{ad.age?`${ad.age} years`:'-'}}
-              </md-list-item>
-              <md-list-item>
-                <span class="md-body-2">Gender</span>
-                {{ad.gender | capitalize}}
-              </md-list-item>
-            </md-list>
-          </md-card-content>
-        </md-card>
-      </div>
-    </template>
+            </span>
+            <span v-if="ad.createdAt">
+              <md-icon>access_time</md-icon>
+              {{ad.createdAt.toDate() | localeDate}}
+              <span v-if="ad.editedAt">
+                <md-icon>edit</md-icon>
+                {{ad.editedAt.toDate() | localeDate}}
+              </span>
+            </span>
+          </div>
+        </md-card-header>
+        <md-card-media>
+          <img :src="ad.imageUrl" :alt="ad.title" />
+        </md-card-media>
+        <md-card-content>{{ad.description}}</md-card-content>
+        <md-card-actions md-alignment="left">
+          <md-button @click="$router.back()" class="md-raised md-primary">
+            <md-icon>arrow_back_ios</md-icon>Back
+          </md-button>
+        </md-card-actions>
+      </md-card>
+      <md-card class="md-layout-item md-size-40 md-small-size-100">
+        <md-card-header>
+          <md-avatar v-if="author && author.photoURL">
+            <img :src="author.photoURL" />
+          </md-avatar>
+          <md-avatar v-else class="md-avatar-icon">
+            <md-icon>account_circle</md-icon>
+          </md-avatar>
+
+          <div class="md-title" v-if="author && author.displayName">{{author.displayName}}</div>
+          <div class="md-title" v-else>Anonimous</div>
+          <div class="md-subhead">
+            <md-icon>location_on</md-icon>
+            {{ad.location}}
+          </div>
+        </md-card-header>
+        <md-card-actions md-alignment="left">
+          <md-button v-if="!user" to="/login">
+            <md-icon>exit_to_app</md-icon>Login to connect
+          </md-button>
+          <md-button
+            v-if="user && ad.authorId && !isAuthor"
+            class="md-raised md-primary"
+            :to="{name: 'message', params: {id:ad.authorId}}"
+          >
+            <md-icon>chat</md-icon>Message
+          </md-button>
+          <md-button
+            v-if="user && isAuthor"
+            class="md-raised md-primary"
+            :to="{name: 'edit', params: {id:ad.id}}"
+          >
+            <md-icon>edit</md-icon>Edit
+          </md-button>
+          <md-button v-if="user && !isFollowed" @click="follow" class="md-raised md-primary">
+            <md-icon>star_outline</md-icon>Follow ad
+          </md-button>
+          <md-button v-if="user && isFollowed" @click="unfollow" class="md-raised md-primary">
+            <md-icon>star</md-icon>Unfollow ad
+          </md-button>
+        </md-card-actions>
+        <md-card-content>
+          <md-list>
+            <md-list-item>
+              <span class="md-body-2">Ad Type:</span>
+              {{ad.adType | capitalize}}
+            </md-list-item>
+            <md-list-item>
+              <span class="md-body-2">Breed:</span>
+              {{ad.breed | capitalize}}
+            </md-list-item>
+            <md-list-item>
+              <span class="md-body-2">Location</span>
+              {{ad.location || '-'}}
+            </md-list-item>
+            <md-list-item>
+              <span class="md-body-2">Pedigree</span>
+              {{ad.pedigree? 'Yes': 'No'}}
+            </md-list-item>
+            <md-list-item>
+              <span class="md-body-2">Age</span>
+              {{ad.age?`${ad.age} years`:'-'}}
+            </md-list-item>
+            <md-list-item>
+              <span class="md-body-2">Gender</span>
+              {{ad.gender | capitalize}}
+            </md-list-item>
+          </md-list>
+        </md-card-content>
+      </md-card>
+    </div>
   </div>
 </template>
 
@@ -112,7 +117,7 @@ export default {
   data() {
     return {
       ad: {},
-      loading: false,
+      author: {},
       noResult: false
     };
   },
@@ -136,13 +141,15 @@ export default {
     "$route.params": {
       immediate: true,
       handler({ id }) {
-        this.loading = true;
+        this.$store.commit("setLoading", true);
         this.noResult = false;
         this.$bind("ad", db.collection("ads").doc(id)).then(doc => {
-          this.loading = false;
+          this.$store.commit("setLoading", false);
           if (!doc) {
             this.noResult = true;
           }
+          const { authorId } = doc;
+          this.$bind("author", db.collection("users").doc(authorId));
         });
       }
     }

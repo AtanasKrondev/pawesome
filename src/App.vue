@@ -19,6 +19,7 @@
       </md-app-drawer>
 
       <md-app-content>
+        <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
         <router-view></router-view>
       </md-app-content>
     </md-app>
@@ -26,7 +27,6 @@
 </template>
 
 <script>
-import "vue-material/dist/vue-material.min.css";
 import "vue-material/dist/theme/default.css";
 import AppNavDrawer from "./components/core/NavDrawer.vue";
 import AppMenu from "./components/core/Menu.vue";
@@ -35,13 +35,17 @@ export default {
   name: "App",
   components: {
     AppNavDrawer,
-    AppMenu
+    AppMenu,
   },
   data() {
     return {
-      navDrawer: false,
-      user: null
+      navDrawer: false
     };
+  },
+  computed: {
+    loading() {
+      return this.$store.getters.loading;
+    },
   }
 };
 </script>

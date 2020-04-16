@@ -6,6 +6,7 @@ const AdList = () => import('./components/ads/AdList.vue');
 const Login = () => import('./components/auth/Login.vue');
 const Register = () => import('./components/auth/Register.vue');
 const Messages = () => import('./components/messages/Messages.vue');
+const Chat = () => import('./components/messages/Chat.vue');
 const ProfileEdit = () => import('./components/auth/ProfileEdit.vue');
 const AdPost = () => import('./components/ads/AdPost.vue');
 const AdEdit = () => import('./components/ads/AdEdit.vue');
@@ -24,6 +25,7 @@ const routes = [
     { path: '/my-ads', component: MyAds, meta: { requireAuth: true } },
     { path: '/followed-ads', component: FollowedAds, meta: { requireAuth: true } },
     { path: '/messages', component: Messages, meta: { requireAuth: true } },
+    { path: '/message/:id', name:'message', component: Chat, meta: { requireAuth: true } },
     { path: '/details/:id', name: 'details', component: AdDetails },
     { path: '/', redirect: '/ads' },
     { path: '*', component: NotFound },
@@ -37,6 +39,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
+    store.commit("setNoResult", false);
     const requiresAuth = to.matched.some(record => record.meta.requireAuth);
     const requiresGuest = to.matched.some(record => record.meta.requireGuest);
     const isAuth = store.getters.user;

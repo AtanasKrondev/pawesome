@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import { auth } from "../../main.js";
+import { auth, db } from "../../main.js";
 import { validationMixin } from "vuelidate";
 import {
   required,
@@ -209,7 +209,16 @@ export default {
         displayName: this.profile.displayName,
         photoURL: this.profile.photoURL
       };
-      this.$store.dispatch("updateProfile", payload);
+      this.$store
+        .dispatch("updateProfile", payload)
+        .then(() =>
+          db
+            .collection("users")
+            .doc(this.$store.getters.user.uid)
+            .set(payload, { merge: true })
+            .catch(err => console.log(err))
+        )
+        .catch(err => console.log(err));
     },
     openDialog(value) {
       this.showDialog = true;

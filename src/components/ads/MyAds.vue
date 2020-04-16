@@ -1,6 +1,5 @@
 <template>
   <div>
-    <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
     <div v-if="!loading" class="md-layout md-alignment-top-center">
       <md-empty-state
         v-if="!myAds.length"
@@ -46,13 +45,15 @@ export default {
   mixins: [filterMixin],
   data() {
     return {
-      myAds: [],
-      loading: false
+      myAds: []
     };
   },
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   watch: {
@@ -61,7 +62,7 @@ export default {
       handler(user) {
         if (user) {
           const { uid } = user;
-          this.loading = true;
+          this.$store.commit("setLoading", true);
           this.$bind(
             "myAds",
             db
@@ -69,7 +70,7 @@ export default {
               .where("authorId", "==", uid)
               .orderBy("createdAt", "desc")
           )
-            .then(() => (this.loading = false))
+            .then(() => this.$store.commit("setLoading", false))
             .catch(err => console.log(err));
         }
       }

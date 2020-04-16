@@ -9,11 +9,19 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
     state: {
-        user: null
+        user: null,
+        loading: false,
+        noResult: false,
     },
     getters: {
         user: state => {
             return state.user;
+        },
+        loading: state => {
+            return state.loading
+        },
+        noResult: state => {
+            return state.noResult
         }
     },
     mutations: {
@@ -22,6 +30,12 @@ const store = new Vuex.Store({
         },
         updateUser: (state, payload) => {
             state.user = Object.assign({}, state.user, payload)
+        },
+        setLoading: (state, payload) => {
+            state.loading = payload;
+        },
+        setNoResult: (state, payload) => {
+            state.noResult = payload;
         },
     },
     actions: {

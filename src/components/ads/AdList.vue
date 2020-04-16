@@ -1,7 +1,6 @@
 <template>
   <div>
-    <md-progress-bar v-if="loading" md-mode="indeterminate" class="md-accent"></md-progress-bar>
-    <app-ad-search v-if="!loading"></app-ad-search>
+    <app-ad-search></app-ad-search>
     <p class="md-caption">
       {{loading?'Searching for':'Showing'}}
       <span v-if="!$route.query.type &&!$route.query.breed">all</span>
@@ -45,18 +44,23 @@ export default {
     AppAdSearch
   },
   data() {
-    return { ads: [], loading: false };
+    return { ads: [] };
+  },
+  computed: {
+    loading() {
+      return this.$store.getters.loading;
+    },
   },
   watch: {
     "$route.query": {
       immediate: true,
       handler({ type, breed }) {
-        this.loading = true;
+        this.$store.commit("setLoading", true);
         if (!type && !breed) {
           this.$bind(
             "ads",
             db.collection("ads").orderBy("createdAt", "desc")
-          ).then(() => (this.loading = false));
+          ).then(() => this.$store.commit("setLoading", false));
         } else if (!breed) {
           this.$bind(
             "ads",
@@ -64,7 +68,7 @@ export default {
               .collection("ads")
               .where("adType", "==", type)
               .orderBy("createdAt", "desc")
-          ).then(() => (this.loading = false));
+          ).then(() => this.$store.commit("setLoading", false));
         } else if (!type) {
           this.$bind(
             "ads",
@@ -72,7 +76,7 @@ export default {
               .collection("ads")
               .where("breed", "==", breed)
               .orderBy("createdAt", "desc")
-          ).then(() => (this.loading = false));
+          ).then(() => this.$store.commit("setLoading", false));
         } else {
           this.$bind(
             "ads",
@@ -81,7 +85,7 @@ export default {
               .where("breed", "==", breed)
               .where("adType", "==", type)
               .orderBy("createdAt", "desc")
-          ).then(() => (this.loading = false));
+          ).then(() => this.$store.commit("setLoading", false));
         }
       }
     }
