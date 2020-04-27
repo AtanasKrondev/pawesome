@@ -86,8 +86,8 @@ export default {
       const user = {
         email: this.email,
         password: this.password
-      }
-      this.$store.dispatch('register', user)
+      };
+      this.$store.dispatch("register", user)
     }
   },
   mixins: [validationMixin],

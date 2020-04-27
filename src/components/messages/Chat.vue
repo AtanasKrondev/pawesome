@@ -1,15 +1,18 @@
 <template>
   <div class="md-layout md-alignment-top-center">
     <app-not-found v-if="noResult"></app-not-found>
-    <div v-else class="chat md-scrollbar md-layout-item md-size-50 md-small-size-100">
-      <md-list class="md-double-line">
+    <div v-else-if="!loading" class="chat md-scrollbar md-layout-item md-size-50 md-small-size-100">
+      <md-list>
         <md-list-item>
-          <md-avatar>
-            <img v-if="otherUser" :src="otherUser.photoURL" />
+          <md-avatar v-if="otherUser && otherUser.photoURL">
+            <img :src="otherUser.photoURL" />
+          </md-avatar>
+          <md-avatar v-else class="md-avatar-icon">
+            <md-icon>account_circle</md-icon>
           </md-avatar>
 
           <div class="md-list-item-text">
-            <span v-if="otherUser">{{otherUser.displayName}}</span>
+            <span v-if="otherUser">{{otherUser.displayName? otherUser.displayName: 'Anonimous'}}</span>
           </div>
           <md-button class="md-icon-button md-list-action" to="/messages">
             <md-icon>keyboard_arrow_right</md-icon>
@@ -87,6 +90,9 @@ export default {
       const user1 = this.user ? this.user.uid : "";
       const user2 = this.otherUser ? this.otherUser.id : "";
       return user1 < user2 ? user1 + "_" + user2 : user2 + "_" + user1;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   watch: {

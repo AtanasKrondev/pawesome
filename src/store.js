@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { auth } from "./main.js"
+import { auth, db } from "./main.js"
 import router from './router.js'
 
 Vue.use(Vuex);
@@ -59,6 +59,11 @@ const store = new Vuex.Store({
                     commit('setSnackbarText', 'Registration successful')
                     commit('setShowSnackbar', true);
                     router.push("/profile");
+                    db
+                        .collection("users")
+                        .doc(response.user.uid)
+                        .set({})
+                        .catch(catchError);
                 })
                 .catch(catchError);
         },
@@ -109,7 +114,6 @@ const store = new Vuex.Store({
 });
 
 const catchError = err => {
-    console.log(err);
     store.commit('setSnackbarText', err.message)
     store.commit('setShowSnackbar', true);
 };

@@ -26,6 +26,14 @@ export default {
     close() {
       this.$store.commit("setShowSnackbar", false);
     }
+  },
+  watch: {
+    immediate: true,
+    showSnackbar(show) {
+      if (show) {
+        setTimeout(() => this.$store.commit("setShowSnackbar", false), 3000);
+      }
+    }
   }
 };
 </script>

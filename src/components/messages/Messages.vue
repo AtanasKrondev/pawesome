@@ -1,15 +1,16 @@
 <template>
-  <div class="md-layout md-alignment-top-center">
-    <md-list
-      class="md-triple-line md-dense md-layout-item md-size-50 md-small-size-100 md-scrollbar"
-    >
+  <div v-if="!loading" class="md-layout md-alignment-top-center">
+    <md-list class="md-layout-item md-size-50 md-small-size-100 md-scrollbar">
       <md-list-item v-for="c in chatList" :key="c.id">
-        <md-avatar>
+        <md-avatar v-if="c.photoURL">
           <img :src="c.photoURL" />
+        </md-avatar>
+        <md-avatar v-else c>
+          <md-icon>account_circle</md-icon>
         </md-avatar>
 
         <div class="md-list-item-text">
-          <span>{{c.displayName}}</span>
+          <span>{{c.displayName? c.displayName: 'Anonimous'}}</span>
         </div>
         <md-button class="md-icon-button md-list-action" :to="{name: 'message', params: {id:c.id}}">
           <md-icon>keyboard_arrow_right</md-icon>
@@ -29,6 +30,7 @@ export default {
   watch: {
     immediate: true,
     chats(chats) {
+      this.$store.commit("setLoading", true);
       const idArray = chats.map(c => this.otherUser(c.users));
       let itemRefs = idArray.map(id => {
         return db
@@ -44,6 +46,7 @@ export default {
             return { id, ...data };
           });
         })
+        .then(() => this.$store.commit("setLoading", false))
         .catch(err => {
           console.log(err);
           this.$store.commit("setSnackbarText", err.message);
@@ -54,6 +57,9 @@ export default {
   computed: {
     user() {
       return this.$store.getters.user;
+    },
+    loading() {
+      return this.$store.getters.loading;
     }
   },
   methods: {
