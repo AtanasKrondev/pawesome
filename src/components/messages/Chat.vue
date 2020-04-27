@@ -1,46 +1,28 @@
 <template>
   <div class="md-layout md-alignment-top-center">
-    <div class="chat md-scrollbar md-layout-item md-size-50 md-small-size-100">
+    <app-not-found v-if="noResult"></app-not-found>
+    <div v-else class="chat md-scrollbar md-layout-item md-size-50 md-small-size-100">
       <md-list class="md-double-line">
         <md-list-item>
           <md-avatar>
-            <img src="https://placeimg.com/40/40/people/1" alt="People" />
+            <img v-if="otherUser" :src="otherUser.photoURL" />
           </md-avatar>
 
           <div class="md-list-item-text">
-            <span>Ali Connors</span>
-            <span>Boxer for Breeding</span>
+            <span v-if="otherUser">{{otherUser.displayName}}</span>
           </div>
           <md-button class="md-icon-button md-list-action" to="/messages">
             <md-icon>keyboard_arrow_right</md-icon>
           </md-button>
         </md-list-item>
       </md-list>
-      <div class="msg-container md-scrollbar">
-        <md-card>
-          <md-card-content>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus magnam expedita sit unde praesentium cum neque veniam iure quibusdam iste, non reiciendis quo quasi consequuntur at porro repellendus! Doloribus, delectus!</md-card-content>
-        </md-card>
-        <md-card class="md-primary own-msg">
-          <md-card-content>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus magnam expedita sit unde praesentium cum neque veniam iure quibusdam iste, non reiciendis quo quasi consequuntur at porro repellendus! Doloribus, delectus!</md-card-content>
-        </md-card>
-        <md-card>
-          <md-card-content>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus magnam expedita sit unde praesentium cum neque veniam iure quibusdam iste, non reiciendis quo quasi consequuntur at porro repellendus! Doloribus, delectus!</md-card-content>
-        </md-card>
-        <md-card class="md-primary own-msg">
-          <md-card-content>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus magnam expedita sit unde praesentium cum neque veniam iure quibusdam iste, non reiciendis quo quasi consequuntur at porro repellendus! Doloribus, delectus!</md-card-content>
-        </md-card>
-        <md-card>
-          <md-card-content>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus magnam expedita sit unde praesentium cum neque veniam iure quibusdam iste, non reiciendis quo quasi consequuntur at porro repellendus! Doloribus, delectus!</md-card-content>
-        </md-card>
-        <md-card class="md-primary own-msg">
-          <md-card-content>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus magnam expedita sit unde praesentium cum neque veniam iure quibusdam iste, non reiciendis quo quasi consequuntur at porro repellendus! Doloribus, delectus!</md-card-content>
-        </md-card>
-        <md-card>
-          <md-card-content>bla bl</md-card-content>
-        </md-card>
-        <md-card class="md-primary own-msg">
-          <md-card-content>bla bl</md-card-content>
-        </md-card>
+      <div v-if="user" class="msg-container md-scrollbar" id="chat">
+        <div v-for="m in messages" :key="m.id" :class="{'own-msg':m.sender===user.uid}">
+          <md-card :class="{'md-primary':m.sender===user.uid}">
+            <md-card-content>{{m.message}}</md-card-content>
+          </md-card>
+          <p v-if="m.timestamp" class="md-caption">{{m.timestamp.toDate() | fromNow}}</p>
+        </div>
       </div>
       <form @submit.prevent="submit">
         <md-field>
@@ -56,20 +38,55 @@
 
 <script>
 import { db } from "../../main.js";
+import firebase from "firebase/app";
+import "firebase/firestore";
+import filterMixin from "../../mixin/filterMixin.js";
+import AppNotFound from "../core/NotFound";
+
+const fieldValue = firebase.firestore.FieldValue;
 
 export default {
+  components: { AppNotFound },
+  mixins: [filterMixin],
   data() {
     return {
       message: "",
-      otherUser: {}
+      otherUser: {},
+      messages: []
     };
   },
   methods: {
     submit() {
       if (this.message) {
-        console.log(this.message);
+        const message = {
+          message: this.message,
+          sender: this.user.uid,
+          timestamp: fieldValue.serverTimestamp()
+        };
+        db.collection("messages")
+          .doc(this.chatId)
+          .collection("messages")
+          .add(message);
         this.message = "";
+        this.scrollToEnd();
       }
+    },
+    scrollToEnd: function() {
+      const container = this.$el.querySelector("#chat");
+      container.scrollTop = container.scrollHeight;
+    }
+  },
+  computed: {
+    noResult() {
+      return this.$store.getters.noResult;
+    },
+    user() {
+      return this.$store.getters.user;
+    },
+    chatId() {
+      const user1 = this.user ? this.user.uid : "";
+      const user2 = this.otherUser ? this.otherUser.id : "";
+      return user1 < user2 ? user1 + "_" + user2 : user2 + "_" + user1;
     }
   },
   watch: {
@@ -81,7 +98,24 @@ export default {
           this.$store.commit("setLoading", false);
           if (!doc) {
             this.$store.commit("setNoResult", true);
+            return;
           }
+          db.collection("chats")
+            .doc(this.chatId)
+            .set(
+              {
+                users: fieldValue.arrayUnion(this.user.uid, this.otherUser.id)
+              },
+              { merge: true }
+            );
+          this.$bind(
+            "messages",
+            db
+              .collection("messages")
+              .doc(this.chatId)
+              .collection("messages")
+              .orderBy("timestamp", "asc")
+          ).then(() => this.scrollToEnd());
         });
       }
     }
@@ -112,7 +146,16 @@ export default {
   padding: 0;
 }
 
-.own-msg .md-card-content {
+.own-msg {
   text-align: right;
+}
+
+p {
+  margin: 0;
+}
+
+.md-card-content {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 </style>

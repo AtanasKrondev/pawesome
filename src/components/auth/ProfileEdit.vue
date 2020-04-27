@@ -216,9 +216,17 @@ export default {
             .collection("users")
             .doc(this.$store.getters.user.uid)
             .set(payload, { merge: true })
-            .catch(err => console.log(err))
+            .catch(err => {
+              console.log(err);
+              this.$store.commit("setSnackbarText", err.message);
+              this.$store.commit("setShowSnackbar", true);
+            })
         )
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     },
     openDialog(value) {
       this.showDialog = true;
@@ -241,13 +249,22 @@ export default {
             auth.currentUser
               .updatePassword(this.password.password)
               .then(() => {
-                console.log("Password updated");
+                this.$store.commit("setSnackbarText", "Password updated");
+                this.$store.commit("setShowSnackbar", true);
               })
-              .catch(err => console.log(err));
+              .catch(err => {
+                console.log(err);
+                this.$store.commit("setSnackbarText", err.message);
+                this.$store.commit("setShowSnackbar", true);
+              });
           }
           this.updateProperty = null;
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     }
   },
   mixins: [validationMixin],

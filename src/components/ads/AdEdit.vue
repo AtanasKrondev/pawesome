@@ -206,7 +206,6 @@ export default {
   components: { AppNotFound },
   data() {
     return {
-      noResult: false,
       showDialog: false,
       form: {
         title: null,
@@ -227,19 +226,43 @@ export default {
       }
     };
   },
+  computed: {
+    noResult() {
+      return this.$store.getters.noResult;
+    },
+    user() {
+      return this.$store.getters.user;
+    }
+  },
   methods: {
     submit() {
       const editedAt = firebase.firestore.FieldValue.serverTimestamp();
       this.ad
         .update({ editedAt, ...this.form })
-        .then(() => this.$router.back())
-        .catch(err => console.log(err));
+        .then(() => {
+          this.$store.commit("setSnackbarText", "Ad edited");
+          this.$store.commit("setShowSnackbar", true);
+          this.$router.back();
+        })
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     },
     deleteAd() {
       this.ad
         .delete()
-        .then(() => this.$router.push("/my-ads"))
-        .catch(err => console.log(err));
+        .then(() => {
+          this.$store.commit("setSnackbarText", "Ad deleted");
+          this.$store.commit("setShowSnackbar", true);
+          this.$router.push("/my-ads");
+        })
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     },
     initFormValues() {
       this.$store.commit("setLoading", true);
@@ -272,7 +295,11 @@ export default {
           };
           this.$store.commit("setLoading", false);
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     }
   },
   created() {
@@ -281,7 +308,7 @@ export default {
       .get()
       .then(doc => {
         if (!doc.exists) {
-          this.noResult = true;
+          this.$store.commit("setNoResult", true);
           this.$store.commit("setLoading", false);
         } else {
           const { authorId } = doc.data();
@@ -292,7 +319,11 @@ export default {
           }
         }
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+        this.$store.commit("setSnackbarText", err.message);
+        this.$store.commit("setShowSnackbar", true);
+      });
   },
   firestore() {
     return {
@@ -309,11 +340,6 @@ export default {
       price: { decimal, minValue: minValue(0.01) },
       breed: { required },
       age: { decimal, minValue: minValue(0) }
-    }
-  },
-  computed: {
-    user() {
-      return this.$store.getters.user;
     }
   }
 };

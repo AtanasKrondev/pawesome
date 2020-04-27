@@ -1,7 +1,7 @@
 <template>
   <div>
     <app-not-found v-if="noResult"></app-not-found>
-    <div v-else class="md-layout md-alignment-top-center">
+    <div v-else-if="!loading && ad" class="md-layout md-alignment-top-center">
       <md-card class="md-layout-item md-size-50 md-small-size-100">
         <md-card-header>
           <div class="md-title">{{ad.title}}{{ad.price?` - ${ad.price} BGN`: ''}}</div>
@@ -117,23 +117,28 @@ export default {
   data() {
     return {
       ad: {},
-      author: {},
-      noResult: false
+      author: {}
     };
   },
   computed: {
     user() {
       return this.$store.getters.user;
     },
+    loading() {
+      return this.$store.getters.loading;
+    },
+    noResult() {
+      return this.$store.getters.noResult;
+    },
     isAuthor() {
-      if (!this.user) return false;
+      if (!this.user || !this.ad) return false;
       return this.user.uid === this.ad.authorId;
     },
     id() {
       return this.$route.params.id;
     },
     isFollowed() {
-      if (!this.user || !this.ad.followedBy) return false;
+      if (!this.user || !this.ad || !this.ad.followedBy) return false;
       return this.ad.followedBy.includes(this.user.uid);
     }
   },
@@ -142,11 +147,11 @@ export default {
       immediate: true,
       handler({ id }) {
         this.$store.commit("setLoading", true);
-        this.noResult = false;
         this.$bind("ad", db.collection("ads").doc(id)).then(doc => {
           this.$store.commit("setLoading", false);
           if (!doc) {
-            this.noResult = true;
+            this.$store.commit("setNoResult", true);
+            return;
           }
           const { authorId } = doc;
           this.$bind("author", db.collection("users").doc(authorId));
@@ -161,7 +166,15 @@ export default {
         .update({
           followedBy: firebase.firestore.FieldValue.arrayUnion(this.user.uid)
         })
-        .catch(err => console.log(err));
+        .then(() => {
+          this.$store.commit("setSnackbarText", "Added to followed");
+          this.$store.commit("setShowSnackbar", true);
+        })
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     },
     unfollow() {
       db.collection("ads")
@@ -169,7 +182,15 @@ export default {
         .update({
           followedBy: firebase.firestore.FieldValue.arrayRemove(this.user.uid)
         })
-        .catch(err => console.log(err));
+        .then(() => {
+          this.$store.commit("setSnackbarText", "Removed from followed");
+          this.$store.commit("setShowSnackbar", true);
+        })
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     }
   },
   mixins: [filterMixin]

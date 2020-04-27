@@ -211,8 +211,16 @@ export default {
       const createdAt = firebase.firestore.FieldValue.serverTimestamp();
       db.collection("ads")
         .add({ authorId, authorName, authorPhoto, createdAt, ...this.form })
-        .then(() => this.$router.back())
-        .catch(err => console.log(err));
+        .then(() => {
+          this.$store.commit("setSnackbarText", "Ad created");
+          this.$store.commit("setShowSnackbar", true);
+          this.$router.back();
+        })
+        .catch(err => {
+          console.log(err);
+          this.$store.commit("setSnackbarText", err.message);
+          this.$store.commit("setShowSnackbar", true);
+        });
     }
   },
   firestore() {

@@ -57,7 +57,7 @@ export default {
     },
     loading() {
       return this.$store.getters.loading;
-    },
+    }
   },
   watch: {
     user: {
@@ -74,7 +74,11 @@ export default {
               .orderBy("createdAt", "desc")
           )
             .then(() => this.$store.commit("setLoading", false))
-            .catch(err => console.log(err));
+            .catch(err => {
+              console.log(err);
+              this.$store.commit("setSnackbarText", err.message);
+              this.$store.commit("setShowSnackbar", true);
+            });
         }
       }
     }

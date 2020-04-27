@@ -40,6 +40,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     store.commit("setNoResult", false);
+    store.commit("setLoading", false);
     const requiresAuth = to.matched.some(record => record.meta.requireAuth);
     const requiresGuest = to.matched.some(record => record.meta.requireGuest);
     const isAuth = store.getters.user;

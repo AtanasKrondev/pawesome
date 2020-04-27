@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-// import * as firebase from "firebase/app";
-// import "firebase/auth";
 import { auth } from "./main.js"
 import router from './router.js'
 
@@ -12,6 +10,8 @@ const store = new Vuex.Store({
         user: null,
         loading: false,
         noResult: false,
+        showSnackbar: false,
+        snackbarText: '',
     },
     getters: {
         user: state => {
@@ -22,6 +22,12 @@ const store = new Vuex.Store({
         },
         noResult: state => {
             return state.noResult
+        },
+        showSnackbar: state => {
+            return state.showSnackbar
+        },
+        snackbarText: state => {
+            return state.snackbarText
         }
     },
     mutations: {
@@ -37,6 +43,12 @@ const store = new Vuex.Store({
         setNoResult: (state, payload) => {
             state.noResult = payload;
         },
+        setShowSnackbar: (state, payload) => {
+            state.showSnackbar = payload;
+        },
+        setSnackbarText: (state, payload) => {
+            state.snackbarText = payload;
+        },
     },
     actions: {
         register: ({ commit }, payload) => {
@@ -44,27 +56,33 @@ const store = new Vuex.Store({
                 .createUserWithEmailAndPassword(payload.email, payload.password)
                 .then((response) => {
                     commit('setUser', response.user);
+                    commit('setSnackbarText', 'Registration successful')
+                    commit('setShowSnackbar', true);
                     router.push("/profile");
                 })
-                .catch(err => console.log(err));
+                .catch(catchError);
         },
         login: ({ commit }, payload) => {
             auth
                 .signInWithEmailAndPassword(payload.email, payload.password)
                 .then((response) => {
                     commit('setUser', response.user);
+                    commit('setSnackbarText', 'Login successful')
+                    commit('setShowSnackbar', true);
                     router.push("/");
                 })
-                .catch(err => console.log(err));
+                .catch(catchError);
         },
         logout: ({ commit }) => {
             auth
                 .signOut()
                 .then(() => {
                     commit('setUser', null);
+                    commit('setSnackbarText', 'Logout successful')
+                    commit('setShowSnackbar', true);
                     router.push("/login");
                 })
-                .catch(err => console.log(err));
+                .catch(catchError);
         },
         initiate: ({ commit }, payload) => {
             commit('setUser', payload);
@@ -73,17 +91,27 @@ const store = new Vuex.Store({
             auth.currentUser.updateProfile(payload)
                 .then(() => {
                     commit('updateUser', payload);
+                    commit('setSnackbarText', 'Profile updated')
+                    commit('setShowSnackbar', true);
                 })
-                .catch(err => console.log(err));
+                .catch(catchError);
         },
         updateEmail: ({ commit }, payload) => {
             auth.currentUser.updateEmail(payload)
                 .then(() => {
                     commit('updateUser', { email: payload });
+                    commit('setSnackbarText', 'Email updated')
+                    commit('setShowSnackbar', true);
                 })
-                .catch(err => console.log(err));
+                .catch(catchError);
         },
     }
 });
+
+const catchError = err => {
+    console.log(err);
+    store.commit('setSnackbarText', err.message)
+    store.commit('setShowSnackbar', true);
+};
 
 export default store;
