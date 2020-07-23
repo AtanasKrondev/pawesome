@@ -48,7 +48,6 @@ export default {
         })
         .then(() => this.$store.commit("setLoading", false))
         .catch(err => {
-          console.log(err);
           this.$store.commit("setSnackbarText", err.message);
           this.$store.commit("setShowSnackbar", true);
         });
